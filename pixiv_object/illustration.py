@@ -1,9 +1,9 @@
 import time
+import json
 from enum import Enum
 from dataclasses import dataclass
 
-from pixiv_object.user import User, parse_user
-from pixiv_object.meta_page import MetaPage
+from pixiv_object.pixiv_object import PixivObject
 
 
 # region enums
@@ -18,7 +18,35 @@ class IllustType(Enum):
 # endregion
 
 @dataclass
-class Illustration:
+class MetaPage:
+    # region fields
+    square_medium: str
+    medium: str
+    large: str
+    original: str
+
+    # endregion
+
+
+@dataclass
+class User(PixivObject):
+    # region fields
+    id: int
+    name: str
+    account: str
+    profile_image_urls: str
+    is_followed: bool
+
+    # endregion
+
+    @staticmethod
+    def object_hook(d: dict):
+        d['profile_image_urls'] = d['profile_image_urls']['medium']
+        return d
+
+
+@dataclass
+class Illustration(PixivObject):
     # region fields
     id: int
     updated_on: int
@@ -48,41 +76,39 @@ class Illustration:
     # is_visible:bool (same functionality as 'restrict == 0')
     is_muted: bool
     total_comments: int
+
     # endregion
 
+    @staticmethod
+    def object_hook(d: dict):
+        # if at highest level
+        if 'illust' in d:
+            d = d['illust']
 
-# region decoder
-def illust_object_hook(d: dict):
-    # if at highest level
-    if 'illust' in d:
-        d = d['illust']
+            # see Illustration dataclass for detail
+            d.update({
+                'updated_on': int(time.strftime('%Y%m%d')),
+                'is_available_online': True
+            })
+            del d['visible']
 
-        # see Illustration dataclass for detail
-        d.update({
-            'updated_on': int(time.strftime('%Y%m%d')),
-            'is_available_online': True
-        })
-        del d['visible']
+            # parse user
+            d['user'] = User(**User.object_hook(d['user']))
 
-        # parse user
-        d['user'] = parse_user(d['user'])
+            # region put meta_single_page to meta_pages
+            if d.pop('page_count') == 1:
+                d['image_urls']['original'] = d.pop('meta_single_page')['original_image_url']
+                d['meta_pages'].append(MetaPage(**d['image_urls']))
+            else:
+                d['meta_pages'] = [MetaPage(**page['image_urls']) for page in d['meta_pages']]
+            del d['image_urls']
+            # endregion
 
-        # region put meta_single_page to meta_pages
-        if d.pop('page_count') == 1:
-            d['image_urls']['original'] = d.pop('meta_single_page')['original_image_url']
-            d['meta_pages'].append(MetaPage(**d['image_urls']))
-        else:
-            d['meta_pages'] = [MetaPage(**page['image_urls']) for page in d['meta_pages']]
-        del d['image_urls']
-        # endregion
+            # region convert tags
+            tags = []
+            for ts in [list(t.values()) for t in d['tags']]:
+                tags.extend(ts)
+            d['tags'] = tags
+            # endregion
 
-        # region convert tags
-        tags = []
-        for ts in [list(t.values()) for t in d['tags']]:
-            tags.extend(ts)
-        d['tags'] = tags
-        # endregion
-
-    return d
-
-# endregion
+        return d
