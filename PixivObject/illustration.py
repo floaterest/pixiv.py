@@ -1,10 +1,9 @@
 import time
 from enum import Enum
-from typing import List
 from dataclasses import dataclass
 
 from PixivObject.user import User, parse_user
-
+from PixivObject.meta_page import MetaPage
 
 # region enums
 class Restrict(Enum):
@@ -31,8 +30,8 @@ class Illustration:
 
     user: User
     # converted to list[str] instead of list[dict]
-    tags: List[str]
-    tools: List[str]
+    tags: list[str]
+    tools: list[str]
 
     create_date: str
     width: int
@@ -41,7 +40,7 @@ class Illustration:
     x_restrict: bool
     series: object
 
-    meta_pages: list
+    meta_pages: list[MetaPage]
     total_view: int
     total_bookmarks: int
     is_bookmarked: bool
@@ -70,9 +69,9 @@ def illust_object_hook(d: dict):
         # region put meta_single_page to meta_pages
         if d.pop('page_count') == 1:
             d['image_urls']['original'] = d.pop('meta_single_page')['original_image_url']
-            d['meta_pages'].append(d['image_urls'])
+            d['meta_pages'].append(MetaPage(**d['image_urls']))
         else:
-            d['meta_pages'] = [page['image_urls'] for page in d['meta_pages']]
+            d['meta_pages'] = [MetaPage(**page['image_urls']) for page in d['meta_pages']]
         del d['image_urls']
         # endregion
 
