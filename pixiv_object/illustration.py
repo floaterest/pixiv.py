@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pixiv_object.user import User, parse_user
 from pixiv_object.meta_page import MetaPage
 
+
 # region enums
 class Restrict(Enum):
     PUBLIC, MYPIXIV_ONLY, PRIVATE = range(3)
