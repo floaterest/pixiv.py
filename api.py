@@ -1,6 +1,6 @@
 import os
+import sys
 import json
-import shutil
 import hashlib
 from enum import Enum
 from datetime import datetime
@@ -124,15 +124,37 @@ class PixivClient:
     # endregion
 
     # region download
-    def download(self, url: str, filename: str, override: bool):
-        res = self.client.get(url, stream=True, headers={'Referer': 'https://app-api.pixiv.net/'})
+    def download(self, url: str, filename: str = '', override: bool = False, progress: staticmethod = None):
+        """
+        Download an image
+        :param url: url of the image, found in meta_pages or profile_image_urls
+        :param filename: destination filename, will use filename from url if empty
+        :param override: will raise error if false and 'filename' exists
+        :param progress: will be called for each buffer(81920) written
 
+        example of progress:
+            def progress(current:int, total:int):
+                percent = current * 100 // total
+                # current can be greater than total
+                print(min(percent, 100))
+
+        """
         if not override and os.path.exists(filename):
             raise FileExistsError
 
+        res = self.client.get(url, stream=True, headers={'Referer': 'https://app-api.pixiv.net/'})
+
+        data = res.raw.data
+        total = len(data)
+        buffer_size = 81920
         with open(filename, 'wb') as f:
-            shutil.copyfileobj(res.raw, f)
-        del res
+            # (i + 1) to iterate through every end position of the data
+            # range(... + 1) to include the last part (where the size <= buffer_size) of the data
+            for i in [(i + 1) * buffer_size for i in range(total // buffer_size + 1)]:
+                f.write(data[i - buffer_size:i])
+                if progress:
+                    # i can be greater than total
+                    progress(i, total)
 
     # endregion
 
