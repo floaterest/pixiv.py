@@ -39,6 +39,9 @@ class PixivClient:
     # region requests
     @staticmethod
     def ensure_sucess_status_code(res: Response) -> bool:
+        """
+        Check status code and raises error if request not successful
+        """
         if 200 <= res.status_code < 300:
             return True
         else:
@@ -46,6 +49,7 @@ class PixivClient:
 
     @staticmethod
     def unescape(text: str) -> str:
+        # convert r'\/' or '\\/' to '/'
         return bytes(text, 'utf8').decode()
 
     def post(self, url: str, data: dict, object_hook: staticmethod):
@@ -62,6 +66,10 @@ class PixivClient:
     # region oauth
     @staticmethod
     def get_token(data: dict) -> Token:
+        """
+        Get user token with credentials
+        :param data email + password or refresh_token
+        """
         local = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
         data.update({
             'get_secure_url': 1,
@@ -85,6 +93,13 @@ class PixivClient:
 
     @staticmethod
     def login(email: str, password: str):
+        """
+        Create client with email(username) and password
+        (might get email saying new login from {country})
+        :param email: email or username
+        :param password: password
+        :return PixivClient
+        """
         data = {
             'grant_type': 'password',
             'username': email,
@@ -94,6 +109,12 @@ class PixivClient:
 
     @staticmethod
     def refresh(refresh_token: str):
+        """
+        Create client with refresh token
+        (usually won't get email saying new login)
+        :param refresh_token refresh token from the user's token
+        :return: PixivClient
+        """
         data = {
             'grant_type': 'refresh_token',
             'refresh_token': refresh_token
@@ -105,6 +126,7 @@ class PixivClient:
     # region download
     def download(self, url: str, filename: str, override: bool):
         res = self.client.get(url, stream=True, headers={'Referer': 'https://app-api.pixiv.net/'})
+
         if override and os.path.exists(filename):
             raise FileExistsError
 
@@ -114,8 +136,11 @@ class PixivClient:
 
     # endregion
 
+    # region context manager
+
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.client.close()
+    # endregion
