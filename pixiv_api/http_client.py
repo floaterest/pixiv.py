@@ -53,14 +53,14 @@ class HTTPClient:
     # endregion
 
     # region download
-    def download(self, url: str, filename: str = '', override: bool = False):
+    def download(self, url: str, path: str = '', override: bool = False):
         """
         Download an image
         :param url: url of the image, found in meta_pages or profile_image_urls
-        :param filename: destination filename, will use filename from url if empty
+        :param path: destination filename, will use filename from url if empty
         :param override: will raise error if false and 'filename' exists
         """
-        if not override and os.path.exists(filename):
+        if not override and os.path.exists(path):
             raise FileExistsError
 
         res = self.client.get(url, stream=True, headers={'Referer': 'https://app-api.pixiv.net/'})
@@ -68,7 +68,7 @@ class HTTPClient:
         data = res.raw.data
         total = len(data)
         buffer_size = 81920
-        with open(filename, 'wb') as f:
+        with open(path, 'wb') as f:
             # (i + 1) to iterate through every end position of the data
             # range(... + 1) to include the last part (where the size <= buffer_size) of the data
             for i in [(i + 1) * buffer_size for i in range(total // buffer_size + 1)]:
