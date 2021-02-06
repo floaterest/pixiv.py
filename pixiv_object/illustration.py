@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pixiv_object.pixiv_object import PixivObject
 from pixiv_object.pixiv_user import User
 
+
 # region enums
 class Restrict(Enum):
     PUBLIC, MYPIXIV_ONLY, PRIVATE = range(3)
@@ -16,6 +17,7 @@ class IllustType(Enum):
 
 # endregion
 
+# region onther classes
 @dataclass
 class MetaPage:
     # region fields
@@ -25,6 +27,8 @@ class MetaPage:
     original: str
 
     # endregion
+
+# endregion
 
 
 @dataclass
