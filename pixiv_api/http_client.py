@@ -47,8 +47,11 @@ class HTTPClient:
 
         return json.loads(self.unescape(res.text), object_hook=object_hook)
 
-    def get(self, url: str, object_hook: staticmethod = None):
-        pass
+    def get(self, url: str, params: dict, object_hook: staticmethod = None):
+        res = self.client.get(url, params=params)
+        self.ensure_sucess_status_code(res)
+
+        return json.loads(self.unescape(res.text), object_hook=object_hook)
 
     # endregion
 
