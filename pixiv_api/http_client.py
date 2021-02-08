@@ -41,13 +41,13 @@ class HTTPClient:
         # convert r'\/' or '\\/' to '/'
         return bytes(text, 'utf8').decode()
 
-    def post(self, url: str, data: dict, object_hook: staticmethod = None):
+    def post(self, url: str, data: dict, object_hook: staticmethod = None) -> dict:
         res = self.client.post(url, data=data)
         self.ensure_sucess_status_code(res)
 
         return json.loads(self.unescape(res.text), object_hook=object_hook)
 
-    def get(self, url: str, params: dict, object_hook: staticmethod = None):
+    def get(self, url: str, params: dict, object_hook: staticmethod = None) -> dict:
         res = self.client.get(url, params=params)
         self.ensure_sucess_status_code(res)
 
