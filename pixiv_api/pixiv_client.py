@@ -35,6 +35,15 @@ class PixivClient(HTTPClient):
 
     # endregion
 
+    # region GET & POST
+    def get(self, path: str, params: dict, object_hook: staticmethod = None):
+        super(PixivClient, self).get(PixivConstant.HOST + path, params, object_hook)
+
+    def post(self, path: str, data: dict, object_hook: staticmethod = None):
+        super(PixivClient, self).post(PixivConstant.HOST + path, data, object_hook)
+
+    # endregion
+
     # region oauth
     @staticmethod
     def get_token(data: dict) -> Token:
@@ -109,4 +118,7 @@ class PixivClient(HTTPClient):
             else:
                 path = os.path.basename(page.original)
             self.download(page.original, path)
+
     # endregion
+
+# endregion
