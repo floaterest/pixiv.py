@@ -5,6 +5,7 @@ from datetime import datetime
 
 from constant import PixivConstant
 from pixiv_object.token import Token
+from pixiv_object.user_detail import UserDetail
 from pixiv_object.illustration import Illustration
 from pixiv_api.http_client import HTTPClient
 
@@ -130,5 +131,18 @@ class PixivClient(HTTPClient):
             else:
                 path = os.path.basename(page.original)
             self.download(page.original, path)
+
+    # endregion
+
+    # region requests
+    def get_user_detail(self, user_id=None):
+        """
+        Get user's info by id
+        :param user_id: leave empty to use id from token
+        :return: UserDetail
+        """
+        return UserDetail(**self.get('/v1/user/detail', {
+            'user_id': user_id or self.token.user.id
+        }, UserDetail.object_hook))
 
     # endregion
