@@ -26,6 +26,7 @@ class Profile:
     address_id: str
     country_code: str
     job: str
+    job_id: int
     total_follow_users: int
     total_mypixiv_users: int
     total_illusts: int
