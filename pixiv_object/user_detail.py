@@ -96,5 +96,5 @@ class UserDetail(PixivObject):
             d['user'] = User(**User.object_hook(d['user']))
             d['profile'] = Profile(**d['profile'])
             d['profile_publicity'] = ProfilePublicity(**d['profile_publicity'])
-            d['workspcae'] = Workspace(**d['workspcae'])
+            d['workspace'] = Workspace(**d['workspace'])
         return d
