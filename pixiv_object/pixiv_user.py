@@ -11,6 +11,7 @@ class User(PixivObject):
     account: str
     profile_image_urls: str
     is_followed: bool
+    comment: str = ''
 
     # endregion
 
