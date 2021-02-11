@@ -24,7 +24,7 @@ class PixivClient(HTTPClient):
     # region constructor
     def __init__(self, token: Token):
         self.token = token
-        self.client.headers = {
+        self._client.headers = {
             'User-Agent': 'PixivIOSApp/7.6.2 (iOS 12.2; iPhone9,1)',
             'Accept-Language': 'en-US',
             'App-OS': 'ios',
@@ -37,29 +37,29 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region GET & POST
-    def get(self, path: str, params: dict, object_hook: staticmethod = None) -> dict:
+    def _get(self, path: str, params: dict, object_hook: staticmethod = None) -> dict:
         """
         GET request to Pixiv
         :param path: relative path to Pixiv's host
         :param params: query dict
         :param object_hook: convert json to dataclass
         """
-        return super(PixivClient, self).get(PixivConstant.HOST + path, params, object_hook)
+        return super(PixivClient, self)._get(PixivConstant.HOST + path, params, object_hook)
 
-    def post(self, path: str, data: dict, object_hook: staticmethod = None) -> dict:
+    def _post(self, path: str, data: dict, object_hook: staticmethod = None) -> dict:
         """
         POST request to Pixiv
         :param path: relative path to Pixiv's host
         :param data: query dict
         :param object_hook: convert json to dataclass
         """
-        return super(PixivClient, self).post(PixivConstant.HOST + path, data, object_hook)
+        return super(PixivClient, self)._post(PixivConstant.HOST + path, data, object_hook)
 
     # endregion
 
     # region oauth
     @staticmethod
-    def get_token(data: dict) -> Token:
+    def _get_token(data: dict) -> Token:
         """
         Get user token with credentials
         :param data email + password or refresh_token
@@ -76,7 +76,7 @@ class PixivClient(HTTPClient):
             'X-Client-Hash': hashlib.md5((local + PixivConstant.HASH_SECRET).encode('utf8')).hexdigest(),
             'Accept-Language': 'en-US',
         }
-        res = PixivClient.client.post('https://oauth.secure.pixiv.net/auth/token', data=data, headers=headers)
+        res = PixivClient.client._post('https://oauth.secure.pixiv.net/auth/token', data=data, headers=headers)
         if res.status_code == 200:
             res = json.loads(res.text, object_hook=Token.object_hook)
             # Pixiv still keeps 'response' for backwards compatibility
@@ -99,7 +99,7 @@ class PixivClient(HTTPClient):
             'username': email,
             'password': password
         }
-        return PixivClient(PixivClient.get_token(data))
+        return PixivClient(PixivClient._get_token(data))
 
     @staticmethod
     def refresh(refresh_token: str):
@@ -113,7 +113,7 @@ class PixivClient(HTTPClient):
             'grant_type': 'refresh_token',
             'refresh_token': refresh_token
         }
-        return PixivClient(PixivClient.get_token(data))
+        return PixivClient(PixivClient._get_token(data))
 
     # endregion
 
@@ -141,7 +141,7 @@ class PixivClient(HTTPClient):
         :param user_id: leave empty to use id from token
         :return: UserDetail
         """
-        return UserDetail(**self.get('/v1/user/detail', {
+        return UserDetail(**self._get('/v1/user/detail', {
             'user_id': user_id or self.token.user.id
         }, UserDetail.object_hook))
 
