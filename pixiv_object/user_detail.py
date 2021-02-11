@@ -100,8 +100,9 @@ class UserDetail(PixivObject):
     def object_hook(d: dict):
         # if at highest level
         if 'user' in d:
-            d['user'] = User(**User.object_hook(d['user']))
-            d['profile'] = Profile(**d['profile'])
-            d['profile_publicity'] = ProfilePublicity(**ProfilePublicity.object_hook(d['profile_publicity']))
-            d['workspace'] = Workspace(**d['workspace'])
+            for (k, v), c in zip(d.items(), [User, Profile, ProfilePublicity, Workspace]):
+                if issubclass(c, PixivObject):
+                    d[k] = c(**c.object_hook(v))
+                else:
+                    d[k] = c(**v)
         return d
