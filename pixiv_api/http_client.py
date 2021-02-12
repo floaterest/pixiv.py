@@ -23,9 +23,7 @@ class HTTPClient:
 
     """
     progress: staticmethod
-
-    def __init__(self):
-        self._client = cloudscraper.create_scraper()
+    _client = cloudscraper.create_scraper()
 
     # region requests
     @staticmethod
