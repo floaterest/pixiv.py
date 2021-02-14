@@ -47,7 +47,7 @@ class HTTPClient:
 
         return json.loads(self._unescape(res.text), object_hook=object_hook)
 
-    def _get(self, url: str, params: dict, object_hook: staticmethod = None) -> dict:
+    def _get(self, url: str, params: dict = None, object_hook: staticmethod = None) -> dict:
         res = self._client.get(url, params=params)
         self._ensure_sucess_status_code(res)
 
