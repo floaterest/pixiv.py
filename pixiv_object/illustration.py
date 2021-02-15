@@ -28,6 +28,7 @@ class MetaPage:
 
     # endregion
 
+
 # endregion
 
 
@@ -69,8 +70,10 @@ class Illustration(PixivObject):
     def object_hook(d: dict):
         # if at highest level
         if 'illust' in d:
-            d = d['illust']
-
+            return d['illust']
+        # if at second highest lever
+        elif 'title' in d:
+            # region convert d to Illustration type
             # see Illustration dataclass for detail
             d.update({
                 'updated_on': int(time.strftime('%Y%m%d')),
@@ -86,6 +89,7 @@ class Illustration(PixivObject):
                 d['image_urls']['original'] = d.pop('meta_single_page')['original_image_url']
                 d['meta_pages'].append(MetaPage(**d['image_urls']))
             else:
+                del d['meta_single_page']
                 d['meta_pages'] = [MetaPage(**page['image_urls']) for page in d['meta_pages']]
             del d['image_urls']
             # endregion
@@ -95,6 +99,8 @@ class Illustration(PixivObject):
             for ts in [list(t.values()) for t in d['tags']]:
                 tags.extend(ts)
             d['tags'] = tags
+            # endregion
+
             # endregion
 
         return d
