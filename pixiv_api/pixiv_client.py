@@ -25,7 +25,7 @@ class PixivClient(HTTPClient):
     # region constructor
     def __init__(self, token: Token):
         self.token = token
-        self._client.headers = {
+        self.client.headers = {
             'User-Agent': 'PixivIOSApp/7.6.2 (iOS 12.2; iPhone9,1)',
             'Accept-Language': 'en-US',
             'App-OS': 'ios',
@@ -38,32 +38,32 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region GET & POST
-    def _get(self, path: str, params: dict = None, object_hook: staticmethod = None) -> dict:
+    def get(self, path: str, params: dict = None, object_hook: staticmethod = None) -> dict:
         """
         GET request to Pixiv
         :param path: relative path to Pixiv's host
         :param params: query dict
         :param object_hook: convert json to dataclass
         """
-        return super(PixivClient, self)._get(PixivConstant.HOST + path, params, object_hook)
+        return super(PixivClient, self).get(PixivConstant.HOST + path, params, object_hook)
 
-    def _post(self, path: str, data: dict, object_hook: staticmethod = None) -> dict:
+    def post(self, path: str, data: dict, object_hook: staticmethod = None) -> dict:
         """
         POST request to Pixiv
         :param path: relative path to Pixiv's host
         :param data: query dict
         :param object_hook: convert json to dataclass
         """
-        return super(PixivClient, self)._post(PixivConstant.HOST + path, data, object_hook)
+        return super(PixivClient, self).post(PixivConstant.HOST + path, data, object_hook)
 
-    def _get_next(self, url: str, object_hook: staticmethod = None):
-        return super(PixivClient, self)._get(url, object_hook=object_hook)
+    def get_next(self, url: str, object_hook: staticmethod = None):
+        return super(PixivClient, self).get(url, object_hook=object_hook)
 
     # endregion
 
     # region oauth
     @staticmethod
-    def _get_token(data: dict) -> Token:
+    def get_token(data: dict) -> Token:
         """
         Get user token with credentials
         :param data email + password or refresh_token
@@ -80,7 +80,7 @@ class PixivClient(HTTPClient):
             'X-Client-Hash': hashlib.md5((local + PixivConstant.HASH_SECRET).encode('utf8')).hexdigest(),
             'Accept-Language': 'en-US',
         }
-        res = HTTPClient._client.post('https://oauth.secure.pixiv.net/auth/token', data=data, headers=headers)
+        res = HTTPClient.client.post('https://oauth.secure.pixiv.net/auth/token', data=data, headers=headers)
 
         if res.status_code == 200:
             res = json.loads(res.text, object_hook=Token.object_hook)
@@ -104,7 +104,7 @@ class PixivClient(HTTPClient):
             'username': email,
             'password': password
         }
-        return PixivClient(PixivClient._get_token(data))
+        return PixivClient(PixivClient.get_token(data))
 
     @staticmethod
     def refresh(refresh_token: str):
@@ -118,7 +118,7 @@ class PixivClient(HTTPClient):
             'grant_type': 'refresh_token',
             'refresh_token': refresh_token
         }
-        return PixivClient(PixivClient._get_token(data))
+        return PixivClient(PixivClient.get_token(data))
 
     # endregion
 
@@ -145,7 +145,7 @@ class PixivClient(HTTPClient):
         Get user's info by id
         :param user_id: leave empty to use id from token
         """
-        return UserDetail(**self._get('/v1/user/detail', {
+        return UserDetail(**self.get('/v1/user/detail', {
             'user_id': user_id or self.token.user.id
         }, UserDetail.object_hook))
 
@@ -156,11 +156,12 @@ class PixivClient(HTTPClient):
         :param user_id: leave empty to use id from token
         :return: None
         """
-        page = IllustPage(**self._get('/v1/user/illusts', {
+
+        page = IllustPage(**self.get('/v1/user/illusts', {
             'user_id': user_id or self.token.user.id
         }, IllustPage.object_hook))
 
         # stop when callback returns false or no next_url
         while callback(page) and page.next_url:
-            page = IllustPage(**self._get_next(page.next_url))
+            page = IllustPage(**self.get_next(page.next_url))
 # endregion
