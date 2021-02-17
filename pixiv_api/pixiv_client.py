@@ -4,6 +4,7 @@ import hashlib
 from datetime import datetime
 
 from constant import PixivConstant
+from pixiv_object.pixiv_object import PixivObject
 from pixiv_object.token import Token
 from pixiv_object.user_detail import UserDetail
 from pixiv_object.illustration import Illustration, Restrict
@@ -56,8 +57,12 @@ class PixivClient(HTTPClient):
         """
         return super(PixivClient, self).post(PixivConstant.HOST + path, data, object_hook)
 
-    def get_next(self, url: str, object_hook: staticmethod = None):
-        return super(PixivClient, self).get(url, object_hook=object_hook)
+    def get_page(self, pixiv_object: type(PixivObject), path: str, params: dict, callback: staticmethod):
+        page = pixiv_object(**self.get(path, params, pixiv_object.object_hook))
+
+        while callback(page) and page.next_url:
+            # get next page using next_url
+            page = pixiv_object(**super(PixivClient, self).get(page.next_url, object_hook=pixiv_object.object_hook))
 
     # endregion
 
@@ -156,13 +161,8 @@ class PixivClient(HTTPClient):
         :param user_id: leave empty to use id from token
         :return: None
         """
-
-        page = IllustPage(**self.get('/v1/user/illusts', {
+        self.get_page(IllustPage, '/v1/user/illusts', {
             'user_id': user_id or self.token.user.id
-        }, IllustPage.object_hook))
-
-        # stop when callback returns false or no next_url
-        while callback(page) and page.next_url:
-            page = IllustPage(**self.get_next(page.next_url, IllustPage.object_hook))
+        }, callback)
 
 # endregion
