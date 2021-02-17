@@ -6,7 +6,7 @@ from datetime import datetime
 from constant import PixivConstant
 from pixiv_object.token import Token
 from pixiv_object.user_detail import UserDetail
-from pixiv_object.illustration import Illustration
+from pixiv_object.illustration import Illustration, Restrict
 from pixiv_object.illust_page import IllustPage
 from pixiv_api.http_client import HTTPClient
 
@@ -163,5 +163,6 @@ class PixivClient(HTTPClient):
 
         # stop when callback returns false or no next_url
         while callback(page) and page.next_url:
-            page = IllustPage(**self.get_next(page.next_url))
+            page = IllustPage(**self.get_next(page.next_url, IllustPage.object_hook))
+
 # endregion
