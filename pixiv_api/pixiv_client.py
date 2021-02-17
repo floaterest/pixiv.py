@@ -58,6 +58,14 @@ class PixivClient(HTTPClient):
         return super(PixivClient, self).post(PixivConstant.HOST + path, data, object_hook)
 
     def get_page(self, pixiv_object: type(PixivObject), path: str, params: dict, callback: staticmethod):
+        """
+        Keep requesting until callback returns false or no next_url
+        :param pixiv_object: type of the object expected to receive
+        :param path: relative path of the api
+        :param params: query
+        :param callback: staticmethod that takes the page and returns a boolean
+        :return: None
+        """
         page = pixiv_object(**self.get(path, params, pixiv_object.object_hook))
 
         while callback(page) and page.next_url:
