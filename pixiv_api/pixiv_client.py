@@ -165,12 +165,25 @@ class PixivClient(HTTPClient):
     def get_user_illusts(self, callback: staticmethod, user_id=None):
         """
         Get user's illustrations by id
-        :param callback: method to call after each request
+        :param callback: method to call after each request, takes IllustPage as argument
         :param user_id: leave empty to use id from token
         :return: None
         """
         self.get_page(IllustPage, '/v1/user/illusts', {
             'user_id': user_id or self.token.user.id
+        }, callback)
+
+    def get_user_bookmarks(self, callback: staticmethod, user_id=None, restrict=Restrict.PUBLIC):
+        """
+        Get user's illustrations by id
+        :param callback: method to call after each request, takes IllustPage as argument
+        :param user_id: leave empty to use id from token
+        :param restrict:
+        :return: None
+        """
+        self.get_page(IllustPage, '/v1/user/bookmarks/illust', {
+            'user_id': user_id or self.token.user.id,
+            'restrict': restrict.name.lower()
         }, callback)
 
 # endregion
