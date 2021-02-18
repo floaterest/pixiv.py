@@ -62,7 +62,8 @@ class Illustration(PixivObject):
     is_bookmarked: bool
     # is_visible:bool (same functionality as 'restrict == 0')
     is_muted: bool
-    total_comments: int
+    # DNE when gettig user bookmarks(?)
+    total_comments: int = 0
 
     # endregion
 
