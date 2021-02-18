@@ -6,7 +6,7 @@ from pixiv_object.illustration import Illustration
 
 
 @dataclass
-class IllustPage(PixivPage, PixivObject):
+class IllustsPage(PixivPage, PixivObject):
     illusts: list[Illustration]
     next_url: str
 
