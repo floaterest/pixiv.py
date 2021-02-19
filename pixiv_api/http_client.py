@@ -41,6 +41,9 @@ class HTTPClient:
         # convert r'\/' or '\\/' to '/'
         return bytes(text, 'utf8').decode()
 
+    def to_json(self, s: str) -> str:
+        return json.dumps(json.loads(self.unescape(s)), ensure_ascii=False, indent=4)
+
     def post(self, url: str, data: dict, object_hook: staticmethod = None) -> dict:
         res = self.client.post(url, data=data)
         self.ensure_sucess_status_code(res)
