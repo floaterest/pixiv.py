@@ -7,8 +7,9 @@ from constant import PixivConstant
 from pixiv_object.pixiv_object import PixivObject
 from pixiv_object.token import Token
 from pixiv_object.user_detail import UserDetail
+from pixiv_object.users_page import UsersPage
 from pixiv_object.illustration import Illustration, Restrict
-from pixiv_object.illust_page import IllustPage
+from pixiv_object.illusts_page import IllustsPage
 from pixiv_api.http_client import HTTPClient
 
 from urllib3.exceptions import HTTPError
@@ -164,24 +165,37 @@ class PixivClient(HTTPClient):
 
     def get_user_illusts(self, callback: staticmethod, user_id=None):
         """
-        Get user's illustrations by id
+        Get user's illustrations by user id
         :param callback: method to call after each request, takes IllustPage as argument
         :param user_id: leave empty to use id from token
         :return: None
         """
-        self.get_page(IllustPage, '/v1/user/illusts', {
+        self.get_page(IllustsPage, '/v1/user/illusts', {
             'user_id': user_id or self.token.user.id
         }, callback)
 
     def get_user_bookmarks(self, callback: staticmethod, user_id=None, restrict=Restrict.PUBLIC):
         """
-        Get user's illustrations by id
+        Get user's illustrations by user id
         :param callback: method to call after each request, takes IllustPage as argument
         :param user_id: leave empty to use id from token
         :param restrict:
         :return: None
         """
-        self.get_page(IllustPage, '/v1/user/bookmarks/illust', {
+        self.get_page(IllustsPage, '/v1/user/bookmarks/illust', {
+            'user_id': user_id or self.token.user.id,
+            'restrict': restrict.name.lower()
+        }, callback)
+
+    def get_user_followings(self, callback:staticmethod, user_id=None, restrict=Restrict.PUBLIC):
+        """
+        Get user's following by user id
+        :param callback: method to call after each request, takes UsersPage as argument
+        :param user_id: leave empty to use id from token
+        :param restrict:
+        :return: None
+        """
+        self.get_page(UsersPage, '/v1/user/following', {
             'user_id': user_id or self.token.user.id,
             'restrict': restrict.name.lower()
         }, callback)
