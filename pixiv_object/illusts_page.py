@@ -11,7 +11,7 @@ class IllustsPage(PixivPage, PixivObject):
     next_url: str
 
     @staticmethod
-    def object_hook(d: dict):
+    def object_hook(d: dict) -> dict:
         # if at highest level
         if 'illusts' in d:
             # convert each dict to Illustration

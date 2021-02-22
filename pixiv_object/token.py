@@ -22,6 +22,7 @@ class User:
     x_restrict: int
     is_mail_authorized: bool
 
+
 # endregion
 
 
@@ -35,13 +36,15 @@ class Token(PixivObject):
     scope: str
     refresh_token: str
     user: User
+
     # endregion
 
     @staticmethod
-    def object_hook(d: dict):
-        # reaches highest level?
-        if 'access_token' in d:
-            # convert dicts to their types
-            d['user']['profile_image_urls'] = ProfileImageUrls(**d['user']['profile_image_urls'])
+    def object_hook(d: dict) -> dict:
+        # if at 'user' level
+        if 'profile_image_urls' in d:
+            d['profile_image_urls'] = ProfileImageUrls(**d['profile_image_urls'])
+        # if at highest level
+        elif 'access_token' in d:
             d['user'] = User(**d['user'])
         return d

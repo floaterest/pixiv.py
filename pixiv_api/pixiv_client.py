@@ -98,7 +98,6 @@ class PixivClient(HTTPClient):
 
         if res.status_code == 200:
             res = json.loads(res.text, object_hook=Token.object_hook)
-            # Pixiv still keeps 'response' for backwards compatibility
             del res['response']
             return Token(**res)
         else:
@@ -200,4 +199,4 @@ class PixivClient(HTTPClient):
             'restrict': restrict.name.lower()
         }, callback)
 
-# endregion
+    # endregion
