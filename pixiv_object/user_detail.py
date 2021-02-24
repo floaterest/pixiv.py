@@ -1,14 +1,7 @@
-from enum import Enum
 from dataclasses import dataclass
 
 from pixiv_object.user import User
 from pixiv_object.pixiv_object import PixivObject
-
-
-# region enums
-class Publicity(Enum):
-    PUBLIC = 'public'
-    PRIVATE = 'private'
 
 
 # endregion
@@ -46,25 +39,18 @@ class Profile:
 
 
 @dataclass
-class ProfilePublicity(PixivObject):
+class ProfilePublicity:
     # region fields
-    gender: Publicity
-    region: Publicity
-    birth_day: Publicity
-    birth_year: Publicity
-    job: Publicity
+    # str: 'public' or 'privte'
+    gender: str
+    region: str
+    birth_day: str
+    birth_year: str
+    job: str
     # why is just this bool?
     pawoo: bool
 
     # endregion
-
-    @staticmethod
-    def object_hook(d: dict):
-        for k, v in d.items():
-            if isinstance(v, str):
-                d[k] = Publicity(v)
-        return d
-
 
 @dataclass
 class Workspace:
@@ -100,9 +86,7 @@ class UserDetail(PixivObject):
     def object_hook(d: dict):
         # if at highest level
         if 'user' in d:
-            for (k, v), c in zip(d.items(), [User, Profile, ProfilePublicity, Workspace]):
-                if issubclass(c, PixivObject):
-                    d[k] = c(**c.object_hook(v))
-                else:
-                    d[k] = c(**v)
+            types: list[type] = [User, Profile, ProfilePublicity, Workspace]
+            for (k, v), c in zip(d.items(), types):
+                d[k] = c(**v)
         return d
