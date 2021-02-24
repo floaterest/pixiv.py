@@ -68,13 +68,14 @@ class Illustration(PixivObject):
     # endregion
 
     @staticmethod
-    def object_hook(d: dict):
+    def object_hook(d: dict) -> dict:
         # if at highest level
         if 'illust' in d:
             return d['illust']
         # if at second highest lever
         elif 'title' in d:
             # region convert d to Illustration type
+
             # see Illustration dataclass for detail
             d.update({
                 'updated_on': int(time.strftime('%Y%m%d')),
@@ -100,6 +101,7 @@ class Illustration(PixivObject):
             for ts in [list(t.values()) for t in d['tags']]:
                 tags.extend(ts)
             d['tags'] = tags
+
             # endregion
 
             # endregion

@@ -52,6 +52,7 @@ class ProfilePublicity:
 
     # endregion
 
+
 @dataclass
 class Workspace:
     pc: str
@@ -83,7 +84,7 @@ class UserDetail(PixivObject):
     # endregion
 
     @staticmethod
-    def object_hook(d: dict):
+    def object_hook(d: dict) -> dict:
         # if at highest level
         if 'user' in d:
             types: list[type] = [User, Profile, ProfilePublicity, Workspace]

@@ -6,7 +6,7 @@ from pixiv_object.pixiv_object import PixivObject
 from pixiv_object.illustration import Illustration
 
 
-# region subclasses
+# region other classes
 
 @dataclass
 class UserPreview(PixivObject):
@@ -39,7 +39,7 @@ class UsersPage(PixivPage, PixivObject):
     next_url: str
 
     @staticmethod
-    def object_hook(d: dict):
+    def object_hook(d: dict) -> dict:
         # if at highest level
         if 'user_previews' in d:
             for i, prev in enumerate(d['user_previews']):

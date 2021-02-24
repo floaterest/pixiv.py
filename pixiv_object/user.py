@@ -17,7 +17,7 @@ class User(PixivObject):
     # endregion
 
     @staticmethod
-    def object_hook(d: dict):
+    def object_hook(d: dict) -> dict:
         # if at highest level
         if 'profile_image_urls' in d:
             # there's only one url, so no need for an object inside an object
