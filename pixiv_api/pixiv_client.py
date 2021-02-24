@@ -162,6 +162,15 @@ class PixivClient(HTTPClient):
             'user_id': user_id or self.token.user.id
         }, UserDetail.object_hook))
 
+    def get_illust_detail(self, illust_id: int):
+        """
+        Get illust's info by id
+        :param illust_id:
+        """
+        return Illustration(**self.get('/v1/illust/detail', {
+            'illust_id': illust_id
+        }, Illustration.object_hook))
+
     def get_user_illusts(self, callback: staticmethod, user_id=None):
         """
         Get user's illustrations by user id
@@ -186,7 +195,7 @@ class PixivClient(HTTPClient):
             'restrict': restrict.name.lower()
         }, callback)
 
-    def get_user_followings(self, callback:staticmethod, user_id=None, restrict=Restrict.PUBLIC):
+    def get_user_followings(self, callback: staticmethod, user_id=None, restrict=Restrict.PUBLIC):
         """
         Get user's following by user id
         :param callback: method to call after each request, takes UsersPage as argument
@@ -199,4 +208,4 @@ class PixivClient(HTTPClient):
             'restrict': restrict.name.lower()
         }, callback)
 
-    # endregion
+# endregion
