@@ -52,10 +52,6 @@ class HTTPClient:
         res = self.client.get(url, params=params)
         self.ensure_sucess_status_code(res)
 
-        if getattr(sys, 'gettrace', None):
-            txt = json.dumps(json.loads(self.unescape(res.text)), ensure_ascii=False, indent=4)
-            # breakpoint()
-
         return json.loads(self.unescape(res.text), object_hook=object_hook)
 
     # endregion

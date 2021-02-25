@@ -211,4 +211,12 @@ class PixivClient(HTTPClient):
 
     # endregion
 
+    # region POST
+    def add_bookmark(self, illut_id: int, restrict=Restrict.PUBLIC):
+        self.post('/v2/illust/bookmark/add', {
+            'illust_id': illut_id,
+            'restrict': restrict.name.lower()
+        })
+
+    # endregion
     # endregion
