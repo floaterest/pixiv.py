@@ -153,6 +153,7 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region requests
+    # region GET
     def get_user_detail(self, user_id=None) -> UserDetail:
         """
         Get user's info by id
@@ -208,4 +209,6 @@ class PixivClient(HTTPClient):
             'restrict': restrict.name.lower()
         }, callback)
 
-# endregion
+    # endregion
+
+    # endregion
