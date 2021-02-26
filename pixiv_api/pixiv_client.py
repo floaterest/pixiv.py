@@ -183,7 +183,7 @@ class PixivClient(HTTPClient):
             'user_id': user_id or self.token.user.id
         }, callback)
 
-    def get_user_bookmarks(self, callback: staticmethod, user_id=None, restrict=Restrict.PUBLIC):
+    def get_user_bookmarks(self, callback: staticmethod, user_id=None, restrict: str = 'public'):
         """
         Get user's illustrations by user id
         :param callback: method to call after each request, takes IllustPage as argument
@@ -193,10 +193,10 @@ class PixivClient(HTTPClient):
         """
         self.get_page(IllustsPage, '/v1/user/bookmarks/illust', {
             'user_id': user_id or self.token.user.id,
-            'restrict': restrict.name.lower()
+            'restrict': restrict
         }, callback)
 
-    def get_user_followings(self, callback: staticmethod, user_id=None, restrict=Restrict.PUBLIC):
+    def get_user_followings(self, callback: staticmethod, user_id=None, restrict: str = 'public'):
         """
         Get user's following by user id
         :param callback: method to call after each request, takes UsersPage as argument
@@ -206,16 +206,17 @@ class PixivClient(HTTPClient):
         """
         self.get_page(UsersPage, '/v1/user/following', {
             'user_id': user_id or self.token.user.id,
-            'restrict': restrict.name.lower()
+            'restrict': restrict
         }, callback)
 
     # endregion
 
     # region POST
-    def add_bookmark(self, illust_id: int, restrict: Restrict = Restrict.PUBLIC):
+    def add_bookmark(self, illust_id: int, restrict: str = 'public'):
         self.post('/v2/illust/bookmark/add', {
             'illust_id': illust_id,
-            'restrict': restrict.name.lower()
+            'restrict': restrict
         })
+
     # endregion
     # endregion
