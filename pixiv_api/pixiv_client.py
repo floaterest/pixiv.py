@@ -39,7 +39,7 @@ class PixivClient(HTTPClient):
 
     # endregion
 
-    # region GET & POST
+    # region GET & POST methods
     def get(self, path: str, params: dict = None, object_hook: staticmethod = None) -> dict:
         """
         GET request to Pixiv

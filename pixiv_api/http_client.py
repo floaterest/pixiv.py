@@ -14,26 +14,43 @@ class HTTPMethod(Enum):
 
 
 class HTTPClient:
+    progress_callback: staticmethod
     """
-    method that will be called on a buffer(81920 bytes) written
+    progress_callback:
+        method that will be called on a buffer(81920 bytes) written
     e.g.
-        def progress(current:int, total:int):
+        def progress_callback(current:int, total:int):
             percent = current * 100 // total
             # current can be greater than total
             print(min(percent, 100),'%')
-
     """
-    progress: staticmethod
+    request_failed_handler: staticmethod
+    """
+    request_failed_handler:
+        method that will be called when errors happen after an HTTP resquest 
+    e.g.
+        def request_failed_handler(response:Response)->bool:
+            # if forbidden
+            if response.status_code == 403:
+                print('waiting for 5 minutes')
+                time.sleep(300)
+                # try again
+                return True
+            else:
+                return False
+    """
+
     client = cloudscraper.create_scraper()
 
     # region requests
-    @staticmethod
-    def ensure_sucess_status_code(res: Response) -> bool:
+    def ensure_sucess_status_code(self, res: Response) -> bool:
         """
         Check status code and raises error if request not successful
         """
         if 200 <= res.status_code < 300:
             return True
+        elif self.request_failed_handler and self.request_failed_handler(res):
+            return False
         else:
             raise HTTPError(res.status_code, res.text)
 
@@ -44,15 +61,21 @@ class HTTPClient:
 
     def post(self, url: str, data: dict, object_hook: staticmethod = None) -> dict:
         res = self.client.post(url, data=data)
-        self.ensure_sucess_status_code(res)
-
-        return json.loads(self.unescape(res.text), object_hook=object_hook)
+        if self.ensure_sucess_status_code(res):
+            return json.loads(self.unescape(res.text), object_hook=object_hook)
+        # if request_failed_handler says 'do it again'
+        else:
+            self.post(url, data, object_hook)
 
     def get(self, url: str, params: dict = None, object_hook: staticmethod = None) -> dict:
         res = self.client.get(url, params=params)
         self.ensure_sucess_status_code(res)
 
-        return json.loads(self.unescape(res.text), object_hook=object_hook)
+        if self.ensure_sucess_status_code(res):
+            return json.loads(self.unescape(res.text), object_hook=object_hook)
+        # if request_failed_handler says 'do it again'
+        else:
+            self.get(url, params, object_hook)
 
     # endregion
 
@@ -77,9 +100,9 @@ class HTTPClient:
             # range(... + 1) to include the last part (where the size <= buffer_size) of the data
             for i in [(i + 1) * buffer_size for i in range(total // buffer_size + 1)]:
                 f.write(data[i - buffer_size:i])
-                if self.progress:
+                if self.progress_callback:
                     # i can be greater than total
-                    self.progress(i, total)
+                    self.progress_callback(i, total)
 
     # endregion
 
