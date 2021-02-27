@@ -218,5 +218,10 @@ class PixivClient(HTTPClient):
             'restrict': restrict
         })
 
+    def delete_bookmark(self, illust_id: int, restrict: str = 'public'):
+        self.post('/v1/illust/bookmark/delete', {
+            'illust_id': illust_id,
+            'restrict': restrict
+        })
     # endregion
     # endregion
