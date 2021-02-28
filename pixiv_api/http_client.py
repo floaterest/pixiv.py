@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 from enum import Enum
 
