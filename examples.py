@@ -1,7 +1,7 @@
 from pixiv_api.pixiv_client import PixivClient
 
 
-def print_refresh_token(email: str, password: str):
+def stop_sending_me_email(email: str, password: str):
     """
     Use email(or username) and password to get the refresh token
     login will cause Pixiv to send emails saying 'new login in {country}'
