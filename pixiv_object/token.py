@@ -36,7 +36,7 @@ class Token(PixivObject):
     refresh_token: str
     user: User
     # sometimes exists, why?
-    device_token: str = ''
+    device_token: str = None
 
     # endregion
 
