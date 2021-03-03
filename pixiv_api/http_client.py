@@ -28,6 +28,7 @@ class HTTPClient:
                     f.write(json.dumps(o, ensure_ascii=False, indent=4))
                 # continue to process
                 return True
+            # elif forbidden
             elif res.status_code == 403:
                 print('waiting for 5 minutes')
                 time.sleep(300)
