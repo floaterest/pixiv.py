@@ -35,7 +35,8 @@ class Token(PixivObject):
     scope: str
     refresh_token: str
     user: User
-    device_token: str
+    # sometimes exists, why?
+    device_token: str = ''
 
     # endregion
 
