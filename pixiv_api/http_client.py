@@ -1,15 +1,8 @@
 import os
 import json
-from enum import Enum
 
 import cloudscraper
 from requests.models import Response
-from urllib3.exceptions import HTTPError
-
-
-class HTTPMethod(Enum):
-    GET = 'GET'
-    POST = 'POST'
 
 
 class HTTPClient:
@@ -50,39 +43,35 @@ class HTTPClient:
     client = cloudscraper.create_scraper()
 
     # region requests
-    def ensure_sucess_status_code(self, res: Response) -> bool:
+    def ensure_sucess_status_code(self, res: Response, handle: bool = False) -> bool:
         """
         Check status code and raises error if request not successful
         :returns true: json will load the content, false: requst again
         """
-        is_sucessful = 200 <= res.status_code < 300
-
-        if self.request_handler:
+        is_sucessful = res.ok
+        if handle and self.request_handler:
             # return callback's decision
             if (r := self.request_handler(res, is_sucessful)) is not None:
                 return r
         elif is_sucessful:
             return True
 
-        raise HTTPError(res.status_code, res.text)
+        res.raise_for_status()
 
     @staticmethod
     def unescape(text: str) -> str:
         # convert r'\/' or '\\/' to '/'
         return bytes(text, 'utf8').decode()
 
-    def post(self, url: str, data: dict, object_hook: staticmethod = None) -> dict:
+    def post(self, url: str, data: dict, object_hook: staticmethod = None):
         res = self.client.post(url, data=data)
-        if self.ensure_sucess_status_code(res):
-            return json.loads(self.unescape(res.text), object_hook=object_hook)
-        # if handler says 'do it again'
-        else:
+        if not self.ensure_sucess_status_code(res):
             self.post(url, data, object_hook)
 
     def get(self, url: str, params: dict = None, object_hook: staticmethod = None) -> dict:
         res = self.client.get(url, params=params)
-        if self.ensure_sucess_status_code(res):
-            return json.loads(self.unescape(res.text), object_hook=object_hook)
+        if self.ensure_sucess_status_code(res, True):
+            return json.loads(self.unescape(res.text),object_hook=object_hook)
         # if handler says 'do it again'
         else:
             self.get(url, params, object_hook)
