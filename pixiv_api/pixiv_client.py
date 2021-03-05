@@ -136,7 +136,7 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region download
-    def download_illust(self, illust: Illustration):
+    def download_illust(self, illust: Illustration, override: bool = False):
         """
         Download every meta page of an illustration
         """
@@ -148,7 +148,7 @@ class PixivClient(HTTPClient):
                     path += ext
             else:
                 path = os.path.basename(page.original)
-            self.download(page.original, path)
+            self.download(page.original, path, override)
 
     # endregion
 
