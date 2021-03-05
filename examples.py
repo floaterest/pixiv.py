@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 from pixiv_api.pixiv_client import PixivClient
 from pixiv_object.illusts_page import Illustration, IllustsPage
@@ -39,9 +40,11 @@ def i_have_too_much_bookmarks(refresh_token: str):
 
     def callback(page: IllustsPage):
         for illust in page.illusts:
-            print('downloading', illust.id)
+            print(datetime.now().strftime('%H%M%S'), 'download', illust.id)
             client.download_illust(illust, True)
+            print(datetime.now().strftime('%H%M%S'), 'deleting')
             client.delete_bookmark(illust.id)
+        return True
 
     with PixivClient.refresh(refresh_token) as client:
         client.filename_formatter = filename
