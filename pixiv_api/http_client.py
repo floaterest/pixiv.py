@@ -75,7 +75,7 @@ class HTTPClient:
         res = self.client.post(url, data=data)
         if self.ensure_sucess_status_code(res):
             return json.loads(self.unescape(res.text), object_hook=object_hook)
-        # if request_failed_handler says 'do it again'
+        # if handler says 'do it again'
         else:
             self.post(url, data, object_hook)
 
