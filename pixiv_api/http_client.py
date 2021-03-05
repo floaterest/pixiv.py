@@ -81,8 +81,6 @@ class HTTPClient:
 
     def get(self, url: str, params: dict = None, object_hook: staticmethod = None) -> dict:
         res = self.client.get(url, params=params)
-        self.ensure_sucess_status_code(res)
-
         if self.ensure_sucess_status_code(res):
             return json.loads(self.unescape(res.text), object_hook=object_hook)
         # if handler says 'do it again'
