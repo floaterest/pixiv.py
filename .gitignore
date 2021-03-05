@@ -3,6 +3,8 @@
 
 # for testing
 *.json
+*.jpg
+*.png
 t[0-9].py
 
 # Byte-compiled / optimized / DLL files
