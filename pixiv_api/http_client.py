@@ -58,11 +58,6 @@ class HTTPClient:
 
         res.raise_for_status()
 
-    @staticmethod
-    def unescape(text: str) -> str:
-        # convert r'\/' or '\\/' to '/'
-        return bytes(text, 'utf8').decode()
-
     def post(self, url: str, data: dict, object_hook: staticmethod = None):
         res = self.client.post(url, data=data)
         if not self.ensure_sucess_status_code(res):
@@ -71,7 +66,7 @@ class HTTPClient:
     def get(self, url: str, params: dict = None, object_hook: staticmethod = None) -> dict:
         res = self.client.get(url, params=params)
         if self.ensure_sucess_status_code(res, True):
-            return json.loads(self.unescape(res.text),object_hook=object_hook)
+            return res.json(object_hook=object_hook)
         # if handler says 'do it again'
         else:
             self.get(url, params, object_hook)
