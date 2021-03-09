@@ -3,7 +3,6 @@ from datetime import datetime
 
 from pixiv_api.pixiv_client import PixivClient
 from pixiv_object.illusts_page import Illustration, IllustsPage
-from pixiv_object.users_page import UsersPage
 
 from requests.models import Response
 
