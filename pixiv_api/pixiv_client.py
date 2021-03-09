@@ -8,7 +8,7 @@ from pixiv_object.pixiv_object import PixivObject
 from pixiv_object.token import Token
 from pixiv_object.user_detail import UserDetail
 from pixiv_object.users_page import UsersPage
-from pixiv_object.illustration import Illustration, Restrict
+from pixiv_object.illustration import Illustration
 from pixiv_object.illusts_page import IllustsPage
 from pixiv_api.http_client import HTTPClient
 
