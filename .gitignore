@@ -6,6 +6,7 @@
 *.jpg
 *.png
 t[0-9].py
+*.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
