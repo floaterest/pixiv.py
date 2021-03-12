@@ -1,14 +1,17 @@
-from _io import BufferedReader, BufferedWriter
+from pixiv_database.io import BinaryReader
 
 
 class PixivObject:
+    def __init__(self):
+        pass
+
     @staticmethod
     def object_hook(d: dict) -> dict:
         pass
 
     @staticmethod
-    def read(f: BufferedReader) -> object:
+    def read(r: BinaryReader):
         pass
 
-    def write(self, f: BufferedWriter):
+    def write(self):
         pass
