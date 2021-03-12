@@ -1,4 +1,4 @@
-from pixiv_database.io import BinaryReader
+from pixiv_database.io import BinaryReader, BinaryWriter
 
 
 class PixivObject:
@@ -13,5 +13,5 @@ class PixivObject:
     def read(r: BinaryReader):
         pass
 
-    def write(self):
+    def write(self, w: BinaryWriter):
         pass
