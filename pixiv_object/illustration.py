@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from pixiv_object.pixiv_object import PixivObject
 from pixiv_object.user import User
+from pixiv_database.io import BinaryReader, BinaryWriter
 
 
 # region enums
@@ -19,7 +20,7 @@ class IllustType(Enum):
 
 # region onther classes
 @dataclass
-class MetaPage:
+class MetaPage(PixivObject):
     # region fields
     square_medium: str
     medium: str
@@ -39,7 +40,7 @@ class Illustration(PixivObject):
     updated_on: int
     is_available_online: bool
     title: str
-    type: str
+    type: IllustType
     # image_urls:dict (included in 'meta_pages')
     caption: str
     restrict: Restrict
@@ -48,13 +49,12 @@ class Illustration(PixivObject):
     # converted to list[str] instead of list[dict]
     tags: list[str]
     tools: list[str]
-
     create_date: str
     width: int
     height: int
-    sanity_level: bytes
+    sanity_level: int
     x_restrict: bool
-    series: object
+    series = None
 
     meta_pages: list[MetaPage]
     total_view: int
@@ -67,6 +67,7 @@ class Illustration(PixivObject):
 
     # endregion
 
+    # region implementation
     @staticmethod
     def object_hook(d: dict) -> dict:
         # if at highest level
@@ -107,3 +108,61 @@ class Illustration(PixivObject):
             # endregion
 
         return d
+
+    @staticmethod
+    def read(r: BinaryReader):
+        return Illustration(
+            id=r.read_int(),
+            is_available_online=r.read_bool(),
+            updated_on=r.read_int(),
+            title=r.read_string(),
+            type=IllustType(r.read_byte()),
+            caption=r.read_string(),
+            restrict=Restrict(r.read_byte()),
+            user=User.read(r),
+            tags=[r.read_string() for _ in range(r.read_int())],
+            tools=[r.read_string() for _ in range(r.read_int())],
+            create_date=r.read_string(),
+            width=r.read_int(),
+            height=r.read_int(),
+            sanity_level=r.read_byte(),
+            x_restrict=r.read_bool(),
+            meta_pages=[MetaPage.read(r) for _ in range(r.read_int())],
+            total_view=r.read_int(),
+            total_bookmarks=r.read_int(),
+            is_bookmarked=r.read_bool(),
+            is_muted=r.read_bool(),
+            total_comments=r.read_int(),
+        )
+
+    def write(self, w: BinaryWriter):
+        w.write_int(self.id)
+        w.write_bool(self.is_available_online)
+        w.write_int(self.updated_on)
+        w.write_string(self.title)
+        w.write_byte(self.type.value)
+        w.write_string(self.caption)
+        w.write_byte(self.restrict.value)
+
+        self.user.write(w)
+        w.write_int(len(self.tags))
+        for tag in self.tags:
+            w.write_string(tag)
+        w.write_int(len(self.tools))
+        for tool in self.tools:
+            w.write_string(tool)
+        w.write_string(self.create_date)
+        w.write_int(self.width)
+        w.write_int(self.height)
+        w.write_byte(self.sanity_level)
+        w.write_bool(self.x_restrict)
+
+        w.write_int(len(self.meta_pages))
+        for meta_page in self.meta_pages:
+            meta_page.write(w)
+        w.write_int(self.total_view)
+        w.write_int(self.total_bookmarks)
+        w.write_bool(self.is_bookmarked)
+        w.write_bool(self.is_muted)
+        w.write_int(self.total_comments)
+    # endregion
