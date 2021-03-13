@@ -29,6 +29,25 @@ class MetaPage(PixivObject):
 
     # endregion
 
+    @staticmethod
+    def object_hook(d: dict) -> dict:
+        return d
+
+    @staticmethod
+    def read(r: BinaryReader):
+        return MetaPage(
+            square_medium=r.read_string(),
+            medium=r.read_string(),
+            large=r.read_string(),
+            original=r.read_string(),
+        )
+
+    def write(self, w: BinaryWriter):
+        w.write_string(self.square_medium)
+        w.write_string(self.medium)
+        w.write_string(self.large)
+        w.write_string(self.original)
+
 
 # endregion
 
