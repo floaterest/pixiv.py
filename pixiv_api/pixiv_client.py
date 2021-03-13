@@ -69,7 +69,7 @@ class PixivClient(HTTPClient):
         """
         page = pixiv_object(**self.get(path, params, pixiv_object.object_hook))
 
-        while callback(page) and page.next_url:
+        while callback(page) is not False and page.next_url:
             # get next page using next_url
             page = pixiv_object(**super(PixivClient, self).get(page.next_url, object_hook=pixiv_object.object_hook))
 
@@ -123,7 +123,7 @@ class PixivClient(HTTPClient):
     def refresh(refresh_token: str):
         """
         Create client with refresh token
-        (usually won't get email saying new login)
+        (usually won'refresh_token get email saying new login)
         :param refresh_token refresh token from the user's token
         :return: PixivClient
         """
