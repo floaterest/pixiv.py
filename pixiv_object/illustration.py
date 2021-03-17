@@ -19,17 +19,15 @@ class IllustType(Enum):
 
 # endregion
 
-# region onther classes
-
-
-# endregion
-
 
 @dataclass
 class Illustration(PixivObject):
     # region fields
+    # https://www.pixiv.net/artworks/{id}
     id: int
+    # date when the illustration is added to the database
     updated_on: int
+    # indicates if the illustration still exists on pixiv.net
     is_available_online: bool
     title: str
     type: IllustType
@@ -41,10 +39,13 @@ class Illustration(PixivObject):
     # converted to list[str] instead of list[dict]
     tags: list[str]
     tools: list[str]
+    # in iso format
     create_date: str
     width: int
     height: int
+    # kinda represents how NSFW the illustration is?
     sanity_level: int
+    # True if the illustration is r18
     x_restrict: bool
     series = None
 
