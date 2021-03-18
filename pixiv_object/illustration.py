@@ -106,12 +106,12 @@ class Illustration(PixivObject):
     def read(r: BinaryReader):
         return Illustration(
             id=r.read_int(),
-            visible=r.read_bool(),
             updated_on=r.read_int(),
             title=r.read_string(),
             type=IllustType(r.read_byte()),
             caption=r.read_string(),
             restrict=Restrict(r.read_byte()),
+
             user=User.read(r),
             tags=[r.read_string() for _ in range(r.read_int())],
             tools=[r.read_string() for _ in range(r.read_int())],
@@ -120,10 +120,12 @@ class Illustration(PixivObject):
             height=r.read_int(),
             sanity_level=r.read_byte(),
             x_restrict=r.read_bool(),
+
             meta_pages=[MetaPage.read(r) for _ in range(r.read_int())],
             total_view=r.read_int(),
             total_bookmarks=r.read_int(),
             is_bookmarked=r.read_bool(),
+            visible=r.read_bool(),
             is_muted=r.read_bool(),
             total_comments=r.read_int(),
             series=None
@@ -131,7 +133,6 @@ class Illustration(PixivObject):
 
     def write(self, w: BinaryWriter):
         w.write_int(self.id)
-        w.write_bool(self.visible)
         w.write_int(self.updated_on)
         w.write_string(self.title)
         w.write_byte(self.type.value)
@@ -157,6 +158,7 @@ class Illustration(PixivObject):
         w.write_int(self.total_view)
         w.write_int(self.total_bookmarks)
         w.write_bool(self.is_bookmarked)
+        w.write_bool(self.visible)
         w.write_bool(self.is_muted)
         w.write_int(self.total_comments)
     # endregion
