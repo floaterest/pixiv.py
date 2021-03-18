@@ -47,7 +47,7 @@ class Illustration(PixivObject):
     sanity_level: int
     # True if the illustration is r18
     x_restrict: bool
-    series = None
+    series: object
 
     meta_pages: list[MetaPage]
     total_view: int
@@ -126,6 +126,7 @@ class Illustration(PixivObject):
             is_bookmarked=r.read_bool(),
             is_muted=r.read_bool(),
             total_comments=r.read_int(),
+            series=None
         )
 
     def write(self, w: BinaryWriter):
