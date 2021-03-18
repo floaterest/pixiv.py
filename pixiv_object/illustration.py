@@ -27,8 +27,6 @@ class Illustration(PixivObject):
     id: int
     # date when the illustration is added to the database
     updated_on: int
-    # indicates if the illustration still exists on pixiv.net
-    is_available_online: bool
     title: str
     type: IllustType
     # image_urls:dict (included in 'meta_pages')
@@ -53,7 +51,11 @@ class Illustration(PixivObject):
     total_view: int
     total_bookmarks: int
     is_bookmarked: bool
-    # is_visible:bool (same functionality as 'restrict == 0')
+    """
+    if not visible and len(meta_pages):
+        the illustration was visible before but not now
+    """
+    visible: bool
     is_muted: bool
     # DNE when gettig user bookmarks(?)
     total_comments: int = None
@@ -73,9 +75,7 @@ class Illustration(PixivObject):
             # see Illustration dataclass for detail
             d.update({
                 'updated_on': int(time.strftime('%Y%m%d')),
-                'is_available_online': True
             })
-            del d['visible']
 
             # parse user
             d['user'] = User(**User.object_hook(d['user']))
@@ -106,7 +106,7 @@ class Illustration(PixivObject):
     def read(r: BinaryReader):
         return Illustration(
             id=r.read_int(),
-            is_available_online=r.read_bool(),
+            visible=r.read_bool(),
             updated_on=r.read_int(),
             title=r.read_string(),
             type=IllustType(r.read_byte()),
@@ -131,7 +131,7 @@ class Illustration(PixivObject):
 
     def write(self, w: BinaryWriter):
         w.write_int(self.id)
-        w.write_bool(self.is_available_online)
+        w.write_bool(self.visible)
         w.write_int(self.updated_on)
         w.write_string(self.title)
         w.write_byte(self.type.value)
