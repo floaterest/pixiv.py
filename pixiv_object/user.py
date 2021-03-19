@@ -13,7 +13,7 @@ class User(PixivObject):
     profile_image_urls: str
     # sometimes there's no is_followed or comment (?)
     is_followed: bool = None
-    comment: str = None
+    comment: str = ''
 
     # endregion
 
