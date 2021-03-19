@@ -25,7 +25,7 @@ class Illustration(PixivObject):
     # region fields
     # https://www.pixiv.net/artworks/{id}
     id: int
-    # date of the last HTTP request
+    # date of the last sucessful HTTP request (when visible == True)
     updated_on: int
     title: str
     type: IllustType
