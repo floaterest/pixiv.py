@@ -58,7 +58,7 @@ class Illustration(PixivObject):
     visible: bool
     is_muted: bool
     # DNE when gettig user bookmarks(?)
-    total_comments: int = None
+    total_comments: int = 0
 
     # endregion
 
