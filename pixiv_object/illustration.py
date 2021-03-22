@@ -97,7 +97,7 @@ class Illustration(PixivObject):
             # region convert tags
             tags = []
             for ts in [list(t.values()) for t in d['tags']]:
-                tags.extend(ts)
+                tags.extend([t for t in ts if t])
             d['tags'] = tags
 
             # endregion
