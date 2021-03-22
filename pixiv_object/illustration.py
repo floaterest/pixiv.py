@@ -77,6 +77,10 @@ class Illustration(PixivObject):
                 'updated_on': int(time.strftime('%Y%m%d')),
             })
 
+            # convert enums
+            d['type'] = IllustType[str(d['type']).upper()]
+            d['restrict'] = Restrict(d['restrict'])
+
             # parse user
             d['user'] = User(**User.object_hook(d['user']))
 
