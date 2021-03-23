@@ -1,6 +1,7 @@
 import os
 import json
 import hashlib
+from typing import Callable
 from datetime import datetime
 
 from constant import PixivConstant
@@ -16,7 +17,7 @@ from urllib3.exceptions import HTTPError
 
 
 class PixivClient(HTTPClient):
-    filename_formatter: staticmethod
+    filename_formatter: Callable[[Illustration, int], str] = None
     """
     method that returns the filename(str) when downloading an illustration
     e.g.
@@ -40,7 +41,7 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region GET & POST methods
-    def get(self, path: str, params: dict = None, object_hook: staticmethod = None) -> dict:
+    def get(self, path: str, params: dict = None, object_hook: Callable[[dict], dict] = None) -> dict:
         """
         GET request to Pixiv
         :param path: relative path to Pixiv's host
@@ -49,7 +50,7 @@ class PixivClient(HTTPClient):
         """
         return super(PixivClient, self).get(PixivConstant.HOST + path, params, object_hook)
 
-    def post(self, path: str, data: dict, object_hook: staticmethod = None) -> dict:
+    def post(self, path: str, data: dict, object_hook: Callable[[dict], dict] = None) -> dict:
         """
         POST request to Pixiv
         :param path: relative path to Pixiv's host

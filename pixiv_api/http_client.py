@@ -1,11 +1,11 @@
 import os
-
+from typing import Callable
 import cloudscraper
 from requests.models import Response
 
 
 class HTTPClient:
-    request_handler: staticmethod = None
+    request_handler: Callable[[Response, bool], bool] = None
     """
     request_handler:
         method that will be called on each request, returns bool
@@ -28,7 +28,7 @@ class HTTPClient:
                 return False
             # raise error
     """
-    progress_callback: staticmethod = None
+    progress_callback: Callable[[int, int], None] = None
     """
     progress_callback:
         method that will be called on each buffer(81920 bytes) written
@@ -57,12 +57,12 @@ class HTTPClient:
 
         res.raise_for_status()
 
-    def post(self, url: str, data: dict, object_hook: staticmethod = None):
+    def post(self, url: str, data: dict, object_hook: Callable[[dict], dict] = None):
         res = self.client.post(url, data=data)
         if not self.ensure_sucess_status_code(res):
             self.post(url, data, object_hook)
 
-    def get(self, url: str, params: dict = None, object_hook: staticmethod = None) -> dict:
+    def get(self, url: str, params: dict = None, object_hook: Callable[[dict], dict] = None) -> dict:
         res = self.client.get(url, params=params)
         if self.ensure_sucess_status_code(res, True):
             return res.json(object_hook=object_hook)
