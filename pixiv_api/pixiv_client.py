@@ -16,13 +16,13 @@ from urllib3.exceptions import HTTPError
 
 
 class PixivClient(HTTPClient):
+    filename_formatter: staticmethod
     """
     method that returns the filename(str) when downloading an illustration
     e.g.
         def filename_formatter(illust: Illustration, i: int)->str:
             return f'{illust.user.id}-{illust.id}-{i}'
     """
-    filename_formatter: staticmethod
 
     # region constructor
     def __init__(self, token: Token):
@@ -154,6 +154,8 @@ class PixivClient(HTTPClient):
 
     # region requests
     # region GET
+    # region user
+
     def get_user_detail(self, user_id=None) -> UserDetail:
         """
         Get user's info by id
@@ -162,15 +164,6 @@ class PixivClient(HTTPClient):
         return UserDetail(**self.get('/v1/user/detail', {
             'user_id': user_id or self.token.user.id
         }, UserDetail.object_hook))
-
-    def get_illust_detail(self, illust_id: int):
-        """
-        Get illust's info by id
-        :param illust_id:
-        """
-        return Illustration(**self.get('/v1/illust/detail', {
-            'illust_id': illust_id
-        }, Illustration.object_hook))
 
     def get_user_illusts(self, callback: staticmethod, user_id=None):
         """
@@ -208,6 +201,20 @@ class PixivClient(HTTPClient):
             'user_id': user_id or self.token.user.id,
             'restrict': restrict
         }, callback)
+
+    # endregion
+
+    # region illust
+    def get_illust_detail(self, illust_id: int):
+        """
+        Get illust's info by id
+        :param illust_id:
+        """
+        return Illustration(**self.get('/v1/illust/detail', {
+            'illust_id': illust_id
+        }, Illustration.object_hook))
+
+    # endregion
 
     # endregion
 
