@@ -73,9 +73,9 @@ class Illustration(PixivObject):
             # region convert d to Illustration type
 
             # see Illustration dataclass for detail
-            d.update({
+            d |= {
                 'updated_on': int(time.strftime('%Y%m%d')),
-            })
+            }
 
             # convert enums
             d['type'] = IllustType[str(d['type']).upper()]
