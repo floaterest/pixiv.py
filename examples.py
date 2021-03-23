@@ -1,8 +1,8 @@
 import time
 from datetime import datetime
 
-from pixiv_api.pixiv_client import PixivClient
-from pixiv_object.illusts_page import Illustration, IllustsPage
+from pixiv_api import PixivClient
+from pixiv_object import Illustration, IllustsPage
 
 from requests.models import Response
 
@@ -51,5 +51,3 @@ def i_have_too_much_bookmarks(refresh_token: str):
         client.request_handler = request
 
         client.get_user_bookmarks(callback)
-
-
