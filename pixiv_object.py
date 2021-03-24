@@ -406,6 +406,27 @@ class UsersPage(PixivPage, PixivObject):
                 d['user_previews'][i] = UserPreview(**UserPreview.object_hook(prev))
         return d
 
+
 # endregion users page
 
 # endregion user
+
+# region novel
+
+@dataclass
+class NovelText(PixivObject):
+    # only see '{}'
+    novel_marker: object
+    novel_text: str
+    # TODO create Novel class
+    series_prev: object
+    series_next: object
+
+    @staticmethod
+    def object_hook(d: dict) -> dict:
+        # if at highest level
+        if 'novel_marker' in d:
+            # novel parser here
+            pass
+        return d
+# endregion novel

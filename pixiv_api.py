@@ -6,8 +6,11 @@ from datetime import datetime
 from urllib3.exceptions import HTTPError
 
 from constant import PixivConstant
-from pixiv_object import PixivObject, UserDetail, UsersPage, Illustration, IllustsPage
-from token import Token
+from pixiv_object import PixivObject, \
+    Illustration, IllustsPage, \
+    UserDetail, UsersPage, \
+    NovelText
+from pixiv_token import Token
 
 import cloudscraper
 from requests.models import Response
@@ -315,6 +318,15 @@ class PixivClient(HTTPClient):
         }, Illustration.object_hook))
 
     # endregion
+
+    # region novel
+    def get_novel_text(self, novel_id: int):
+        """Get novel's text by id"""
+        return NovelText(**self.get('/v1/novel/text', {
+            'novel_id': novel_id
+        }, NovelText.object_hook))
+
+    # endregion novel
 
     # endregion
 
