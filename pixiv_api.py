@@ -9,7 +9,7 @@ from constant import PixivConstant
 from pixiv_object import PixivObject, \
     Illustration, IllustsPage, \
     UserDetail, UsersPage, \
-    NovelText
+    Novel, NovelText
 from pixiv_token import Token
 
 import cloudscraper
@@ -320,6 +320,12 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region novel
+    def get_novel_detail(self, novel_id: int):
+        """Get novel's info by id"""
+        return Novel(**self.get('/v2/novel/detail', {
+            'novel_id': novel_id
+        }, Novel.object_hook))
+
     def get_novel_text(self, novel_id: int):
         """Get novel's text by id"""
         return NovelText(**self.get('/v1/novel/text', {
