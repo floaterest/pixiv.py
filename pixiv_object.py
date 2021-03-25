@@ -45,7 +45,6 @@ class PixivPage:
 # region common
 @dataclass
 class User(PixivObject):
-    # region fields
     id: int
     name: str
     account: str
@@ -53,8 +52,6 @@ class User(PixivObject):
     # sometimes there's no is_followed or comment (?)
     is_followed: bool = None
     comment: str = ''
-
-    # endregion
 
     @staticmethod
     def object_hook(d: dict) -> dict:
@@ -122,13 +119,10 @@ class Detail(PixivObject):
 # region illustration
 @dataclass
 class MetaPage(PixivObject):
-    # region fields
     square_medium: str
     medium: str
     large: str
     original: str
-
-    # endregion
 
     @staticmethod
     def object_hook(d: dict) -> dict:
@@ -162,6 +156,8 @@ class Illustration(Detail):
     # kinda represents how NSFW the illustration is?
     sanity_level: int
     meta_pages: list[MetaPage]
+    # only see 'None'
+    series: object = None
     # DNE when gettig user bookmarks(?)
     total_comments: int = 0
 
@@ -235,7 +231,6 @@ class Illustration(Detail):
             visible=r.read_bool(),
             is_muted=r.read_bool(),
             total_comments=r.read_int(),
-            series=None
         )
 
     def write(self, w: BinaryWriter):
@@ -268,7 +263,7 @@ class Illustration(Detail):
         w.write_bool(self.visible)
         w.write_bool(self.is_muted)
         w.write_int(self.total_comments)
-    # endregion
+    # endregion implementation
 
 
 @dataclass
@@ -293,7 +288,6 @@ class IllustsPage(PixivPage, PixivObject):
 
 @dataclass
 class Profile:
-    # region fields
     webpage: str
     gender: str
     birth: str
@@ -319,12 +313,9 @@ class Profile:
     is_premium: bool
     is_using_custom_profile_image: bool
 
-    # endregion
-
 
 @dataclass
 class ProfilePublicity:
-    # region fields
     # str: 'public' or 'privte'
     gender: str
     region: str
@@ -333,8 +324,6 @@ class ProfilePublicity:
     job: str
     # why is just this bool?
     pawoo: bool
-
-    # endregion
 
 
 @dataclass
@@ -356,13 +345,10 @@ class Workspace:
 
 @dataclass
 class UserDetail(PixivObject):
-    # region fields
     user: User
     profile: Profile
     profile_publicity: ProfilePublicity
     workspace: Workspace
-
-    # endregion
 
     @staticmethod
     def object_hook(d: dict) -> dict:
@@ -377,16 +363,12 @@ class UserDetail(PixivObject):
 # endregion user detail
 
 # region users page
-
 @dataclass
 class UserPreview(PixivObject):
-    # region field
     user: User
     illusts: list[Illustration]
     novels: list  # TODO
     is_muted: bool
-
-    # endregion
 
     @staticmethod
     def object_hook(d: dict) -> dict:
