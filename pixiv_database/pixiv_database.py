@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from pixiv_database.io import BinaryReader, BinaryWriter
-from pixiv_object.illustration import Illustration
+from pixiv_object import Illustration
 
 
 class PixivDatabase:
