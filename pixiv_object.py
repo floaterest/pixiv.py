@@ -82,6 +82,41 @@ class User(PixivObject):
         w.write_bool(self.is_followed)
 
 
+@dataclass
+class Series:
+    id: int
+    title: str
+
+
+@dataclass
+class Detail(PixivObject):
+    id: int
+    title: str
+    caption: str
+    restrict: Restrict
+    # True if r18
+    x_restrict: bool
+    # in iso format
+    create_date: str
+    # converted to list[str] instead of list[dict]
+    tags: list[str]
+    user: User
+    series: Series
+    total_view: int
+    total_bookmarks: int
+    is_bookmarked: bool
+    """
+    if not visible and len(meta_pages):
+        the illustration was visible before but not now
+    """
+    visible: bool
+    is_muted: bool
+
+    @staticmethod
+    def object_hook(d: dict) -> dict:
+        raise NotImplementedError
+
+
 # endregion common
 
 # region illustration
@@ -116,46 +151,19 @@ class MetaPage(PixivObject):
 
 
 @dataclass
-class Illustration(PixivObject):
-    # region fields
-    # https://www.pixiv.net/artworks/{id}
-    id: int
+class Illustration(Detail):
     # date of the last sucessful HTTP request (when visible == True)
     updated_on: int
-    title: str
     type: IllustType
     # image_urls:dict (included in 'meta_pages')
-    caption: str
-    restrict: Restrict
-
-    user: User
-    # converted to list[str] instead of list[dict]
-    tags: list[str]
     tools: list[str]
-    # in iso format
-    create_date: str
     width: int
     height: int
     # kinda represents how NSFW the illustration is?
     sanity_level: int
-    # True if the illustration is r18
-    x_restrict: bool
-    series: object
-
     meta_pages: list[MetaPage]
-    total_view: int
-    total_bookmarks: int
-    is_bookmarked: bool
-    """
-    if not visible and len(meta_pages):
-        the illustration was visible before but not now
-    """
-    visible: bool
-    is_muted: bool
     # DNE when gettig user bookmarks(?)
     total_comments: int = 0
-
-    # endregion
 
     # region implementation
     @staticmethod
@@ -163,7 +171,7 @@ class Illustration(PixivObject):
         # if at highest level
         if 'illust' in d:
             return d['illust']
-        # if at second highest lever
+        # elif at second highest lever
         elif 'title' in d:
             # region convert d to Illustration type
 
@@ -412,21 +420,53 @@ class UsersPage(PixivPage, PixivObject):
 # endregion user
 
 # region novel
+@dataclass
+class Novel(Detail):
+    @dataclass
+    class Tag:
+        """why is this not the same structure as Illustration.tags?"""
+        name: str
+        translated_name: str
+        added_by_uploaded_user: bool
+
+    is_original: bool
+    image_urls: dict
+    tags: list[Tag]
+    page_count: int
+    text_length: int
+    is_mypixiv_only: bool
+    is_x_restricted: bool
+    total_comments: int
+
+    @staticmethod
+    def object_hook(d: dict) -> dict:
+        # if at highest level
+        if 'novel' in d:
+            return d['novel']
+        # elif at second highest level
+        elif 'title' in d:
+            # convert enums
+            d['restrict'] = Restrict(d['restrict'])
+            # parse tags
+            d['tags'] = [Novel.Tag(**tag) for tag in d['tags']]
+            # parse user
+            d['user'] = User(**User.object_hook(d['user']))
+        return d
+
 
 @dataclass
 class NovelText(PixivObject):
     # only see '{}'
     novel_marker: object
     novel_text: str
-    # TODO create Novel class
-    series_prev: object
-    series_next: object
+    series_prev: Novel
+    series_next: Novel
 
     @staticmethod
     def object_hook(d: dict) -> dict:
         # if at highest level
         if 'novel_marker' in d:
-            # novel parser here
-            pass
+            d['series_prev'] = Novel(**Novel.object_hook(d['series_prev']))
+            d['series_next'] = Novel(**Novel.object_hook(d['series_next']))
         return d
 # endregion novel
