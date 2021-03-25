@@ -80,12 +80,6 @@ class User(PixivObject):
 
 
 @dataclass
-class Series:
-    id: int
-    title: str
-
-
-@dataclass
 class Detail(PixivObject):
     id: int
     title: str
@@ -98,7 +92,6 @@ class Detail(PixivObject):
     # converted to list[str] instead of list[dict]
     tags: list[str]
     user: User
-    series: Series
     total_view: int
     total_bookmarks: int
     is_bookmarked: bool
@@ -403,22 +396,30 @@ class UsersPage(PixivPage, PixivObject):
 
 # region novel
 @dataclass
-class Novel(Detail):
-    @dataclass
-    class Tag:
-        """why is this not the same structure as Illustration.tags?"""
-        name: str
-        translated_name: str
-        added_by_uploaded_user: bool
+class Series:
+    id: int
+    title: str
 
+
+@dataclass
+class NovelTag:
+    """why is this not the same structure as Illustration.tags?"""
+    name: str
+    translated_name: str
+    added_by_uploaded_user: bool
+
+
+@dataclass
+class Novel(Detail):
     is_original: bool
     image_urls: dict
-    tags: list[Tag]
+    tags: list[NovelTag]
     page_count: int
     text_length: int
     is_mypixiv_only: bool
     is_x_restricted: bool
     total_comments: int
+    series: Series
 
     @staticmethod
     def object_hook(d: dict) -> dict:
@@ -426,11 +427,11 @@ class Novel(Detail):
         if 'novel' in d:
             return d['novel']
         # elif at second highest level
-        elif 'title' in d:
+        elif 'caption' in d:
             # convert enums
             d['restrict'] = Restrict(d['restrict'])
             # parse tags
-            d['tags'] = [Novel.Tag(**tag) for tag in d['tags']]
+            d['tags'] = [NovelTag(**tag) for tag in d['tags']]
             # parse user
             d['user'] = User(**User.object_hook(d['user']))
         return d
