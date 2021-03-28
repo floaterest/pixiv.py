@@ -2,8 +2,8 @@ import time
 from enum import Enum
 from dataclasses import dataclass
 
-from PixivObject.user import User, parse_user
-from PixivObject.meta_page import MetaPage
+from pixiv_object.user import User, parse_user
+from pixiv_object.meta_page import MetaPage
 
 # region enums
 class Restrict(Enum):
