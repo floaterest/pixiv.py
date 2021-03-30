@@ -1,12 +1,21 @@
+import os
 import json
+import shutil
 import hashlib
+from enum import Enum
 from datetime import datetime
 
 from constant import PixivConstant
 from pixiv_object.token import Token
 
 import cloudscraper
+from requests.models import Response
 from urllib3.exceptions import HTTPError
+
+
+class HTTPMethod(Enum):
+    GET = 'GET'
+    POST = 'POST'
 
 
 class PixivClient:
@@ -28,18 +37,25 @@ class PixivClient:
     # endregion
 
     # region requests
-    def request(self, method: str, url: str, data=None, params=None) -> str:
-        res = self.client.request(method, url, data=data, params=params)
+    @staticmethod
+    def ensure_sucess_status_code(res: Response) -> bool:
         if 200 <= res.status_code < 300:
-            return res.text
+            return True
         else:
             raise HTTPError(res.status_code, res.text)
 
+    @staticmethod
+    def unescape(text: str) -> str:
+        return bytes(text, 'utf8').decode()
+
     def post(self, url: str, data: dict, object_hook: staticmethod):
-        content = self.request('POST', url, data=data)
-        # unescape
-        content = bytes(content, 'utf8').decode()
-        return json.loads(content, object_hook=object_hook)
+        res = self.client.post(url, data=data)
+        self.ensure_sucess_status_code(res)
+
+        return json.loads(self.unescape(res.text), object_hook=object_hook)
+
+    def get(self, url: str, object_hook: staticmethod = None):
+        pass
 
     # endregion
 
@@ -82,7 +98,19 @@ class PixivClient:
             'grant_type': 'refresh_token',
             'refresh_token': refresh_token
         }
-        PixivClient.get_token(data)
+        return PixivClient(PixivClient.get_token(data))
+
+    # endregion
+
+    # region download
+    def download(self, url: str, filename: str, override: bool):
+        res = self.client.get(url, stream=True, headers={'Referer': 'https://app-api.pixiv.net/'})
+        if override and os.path.exists(filename):
+            raise FileExistsError
+
+        with open(filename, 'wb') as f:
+            shutil.copyfileobj(res.raw, f)
+        del res
 
     # endregion
 
