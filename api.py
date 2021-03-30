@@ -127,7 +127,7 @@ class PixivClient:
     def download(self, url: str, filename: str, override: bool):
         res = self.client.get(url, stream=True, headers={'Referer': 'https://app-api.pixiv.net/'})
 
-        if override and os.path.exists(filename):
+        if not override and os.path.exists(filename):
             raise FileExistsError
 
         with open(filename, 'wb') as f:
