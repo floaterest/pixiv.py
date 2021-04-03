@@ -12,6 +12,12 @@ from urllib3.exceptions import HTTPError
 
 
 class PixivClient(HTTPClient):
+    """
+    method that returns the filename(str) when downloading an illustration
+    e.g.
+        def filename_formatter(illust: Illustration, i: int)->str:
+            return f'{illust.user.id}-{illust.id}-{i}'
+    """
     filename_formatter: staticmethod
 
     # region constructor
@@ -90,7 +96,6 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region download
-
     def download_illust(self, illust: Illustration):
         """
         Download every meta page of an illustration
