@@ -14,12 +14,12 @@ class HTTPMethod(Enum):
 
 class HTTPClient:
     """
-    will be called for each buffer(81920) written
-    example of progress:
-    def progress(current:int, total:int):
-        percent = current * 100 // total
-        # current can be greater than total
-        print(min(percent, 100))
+    method that will be called on a buffer(81920 bytes) written
+    e.g.
+        def progress(current:int, total:int):
+            percent = current * 100 // total
+            # current can be greater than total
+            print(min(percent, 100),'%')
 
     """
     progress: staticmethod
