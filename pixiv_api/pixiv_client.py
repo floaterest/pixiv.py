@@ -1,15 +1,19 @@
+import os
 import json
 import hashlib
 from datetime import datetime
 
 from constant import PixivConstant
 from pixiv_object.token import Token
+from pixiv_object.illustration import Illustration
 from pixiv_api.http_client import HTTPClient
 
 from urllib3.exceptions import HTTPError
 
 
 class PixivClient(HTTPClient):
+    filename_formatter: staticmethod
+
     # region constructor
     def __init__(self, token: Token):
         self.token = token
@@ -83,4 +87,21 @@ class PixivClient(HTTPClient):
         }
         return PixivClient(PixivClient.get_token(data))
 
+    # endregion
+
+    # region download
+
+    def download_illust(self, illust: Illustration):
+        """
+        Download every meta page of an illustration
+        """
+        for i, page in enumerate(illust.meta_pages):
+            if self.filename_formatter:
+                path = str(self.filename_formatter(illust, i))
+                # [-4:] should be the extension of the file
+                if not path.endswith(ext := page.original[-4:]):
+                    path += ext
+            else:
+                path = os.path.basename(page.original)
+            self.download(page.original, path)
     # endregion
