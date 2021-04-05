@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from pixiv_object.pixiv_object import PixivObject
 
+
+# region other classes
 @dataclass
 class ProfileImageUrls:
     px_16x16: str
@@ -19,6 +21,8 @@ class User:
     is_premium: bool
     x_restrict: int
     is_mail_authorized: bool
+
+# endregion
 
 
 @dataclass
