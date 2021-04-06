@@ -41,7 +41,7 @@ class HTTPClient:
         # convert r'\/' or '\\/' to '/'
         return bytes(text, 'utf8').decode()
 
-    def post(self, url: str, data: dict, object_hook: staticmethod):
+    def post(self, url: str, data: dict, object_hook: staticmethod = None):
         res = self.client.post(url, data=data)
         self.ensure_sucess_status_code(res)
 
