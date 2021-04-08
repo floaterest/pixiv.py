@@ -36,7 +36,7 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region GET & POST
-    def get(self, path: str, params: dict, object_hook: staticmethod = None):
+    def get(self, path: str, params: dict, object_hook: staticmethod = None) -> dict:
         """
         GET request to Pixiv
         :param path: relative path to Pixiv's host
@@ -45,7 +45,7 @@ class PixivClient(HTTPClient):
         """
         super(PixivClient, self).get(PixivConstant.HOST + path, params, object_hook)
 
-    def post(self, path: str, data: dict, object_hook: staticmethod = None):
+    def post(self, path: str, data: dict, object_hook: staticmethod = None) -> dict:
         """
         POST request to Pixiv
         :param path: relative path to Pixiv's host
@@ -132,5 +132,3 @@ class PixivClient(HTTPClient):
             self.download(page.original, path)
 
     # endregion
-
-# endregion
