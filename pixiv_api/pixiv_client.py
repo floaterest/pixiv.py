@@ -44,7 +44,7 @@ class PixivClient(HTTPClient):
         :param params: query dict
         :param object_hook: convert json to dataclass
         """
-        super(PixivClient, self).get(PixivConstant.HOST + path, params, object_hook)
+        return super(PixivClient, self).get(PixivConstant.HOST + path, params, object_hook)
 
     def post(self, path: str, data: dict, object_hook: staticmethod = None) -> dict:
         """
@@ -53,7 +53,7 @@ class PixivClient(HTTPClient):
         :param data: query dict
         :param object_hook: convert json to dataclass
         """
-        super(PixivClient, self).post(PixivConstant.HOST + path, data, object_hook)
+        return super(PixivClient, self).post(PixivConstant.HOST + path, data, object_hook)
 
     # endregion
 
