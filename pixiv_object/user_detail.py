@@ -46,7 +46,7 @@ class Profile:
 
 
 @dataclass
-class ProfilePublicity:
+class ProfilePublicity(PixivObject):
     # region fields
     gender: Publicity
     region: Publicity
@@ -57,6 +57,13 @@ class ProfilePublicity:
     pawoo: bool
 
     # endregion
+
+    @staticmethod
+    def object_hook(d: dict):
+        for k, v in d.items():
+            if isinstance(v, str):
+                d[k] = Publicity(v)
+        return d
 
 
 @dataclass
@@ -95,6 +102,6 @@ class UserDetail(PixivObject):
         if 'user' in d:
             d['user'] = User(**User.object_hook(d['user']))
             d['profile'] = Profile(**d['profile'])
-            d['profile_publicity'] = ProfilePublicity(**d['profile_publicity'])
+            d['profile_publicity'] = ProfilePublicity(**ProfilePublicity.object_hook(d['profile_publicity']))
             d['workspace'] = Workspace(**d['workspace'])
         return d
