@@ -23,11 +23,13 @@ class HTTPClient:
 
     """
     progress: staticmethod
-    client = cloudscraper.create_scraper()
+
+    def __init__(self):
+        self._client = cloudscraper.create_scraper()
 
     # region requests
     @staticmethod
-    def ensure_sucess_status_code(res: Response) -> bool:
+    def _ensure_sucess_status_code(res: Response) -> bool:
         """
         Check status code and raises error if request not successful
         """
@@ -37,21 +39,21 @@ class HTTPClient:
             raise HTTPError(res.status_code, res.text)
 
     @staticmethod
-    def unescape(text: str) -> str:
+    def _unescape(text: str) -> str:
         # convert r'\/' or '\\/' to '/'
         return bytes(text, 'utf8').decode()
 
-    def post(self, url: str, data: dict, object_hook: staticmethod = None) -> dict:
-        res = self.client.post(url, data=data)
-        self.ensure_sucess_status_code(res)
+    def _post(self, url: str, data: dict, object_hook: staticmethod = None) -> dict:
+        res = self._client.post(url, data=data)
+        self._ensure_sucess_status_code(res)
 
-        return json.loads(self.unescape(res.text), object_hook=object_hook)
+        return json.loads(self._unescape(res.text), object_hook=object_hook)
 
-    def get(self, url: str, params: dict, object_hook: staticmethod = None) -> dict:
-        res = self.client.get(url, params=params)
-        self.ensure_sucess_status_code(res)
+    def _get(self, url: str, params: dict, object_hook: staticmethod = None) -> dict:
+        res = self._client.get(url, params=params)
+        self._ensure_sucess_status_code(res)
 
-        return json.loads(self.unescape(res.text), object_hook=object_hook)
+        return json.loads(self._unescape(res.text), object_hook=object_hook)
 
     # endregion
 
@@ -66,7 +68,7 @@ class HTTPClient:
         if not override and os.path.exists(path):
             raise FileExistsError
 
-        res = self.client.get(url, stream=True, headers={'Referer': 'https://app-api.pixiv.net/'})
+        res = self._client.get(url, stream=True, headers={'Referer': 'https://app-api.pixiv.net/'})
 
         data = res.raw.data
         total = len(data)
@@ -88,5 +90,5 @@ class HTTPClient:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.client.close()
+        self._client.close()
     # endregion
