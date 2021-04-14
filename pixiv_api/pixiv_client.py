@@ -23,6 +23,7 @@ class PixivClient(HTTPClient):
 
     # region constructor
     def __init__(self, token: Token):
+        super().__init__()
         self.token = token
         self._client.headers = {
             'User-Agent': 'PixivIOSApp/7.6.2 (iOS 12.2; iPhone9,1)',
