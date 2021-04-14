@@ -23,7 +23,6 @@ class PixivClient(HTTPClient):
 
     # region constructor
     def __init__(self, token: Token):
-        super().__init__()
         self.token = token
         self._client.headers = {
             'User-Agent': 'PixivIOSApp/7.6.2 (iOS 12.2; iPhone9,1)',
@@ -77,7 +76,8 @@ class PixivClient(HTTPClient):
             'X-Client-Hash': hashlib.md5((local + PixivConstant.HASH_SECRET).encode('utf8')).hexdigest(),
             'Accept-Language': 'en-US',
         }
-        res = PixivClient.client._post('https://oauth.secure.pixiv.net/auth/token', data=data, headers=headers)
+        res = HTTPClient._client.post('https://oauth.secure.pixiv.net/auth/token', data=data, headers=headers)
+
         if res.status_code == 200:
             res = json.loads(res.text, object_hook=Token.object_hook)
             # Pixiv still keeps 'response' for backwards compatibility
