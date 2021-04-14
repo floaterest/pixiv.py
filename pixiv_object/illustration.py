@@ -3,7 +3,7 @@ from enum import Enum
 from dataclasses import dataclass
 
 from pixiv_object.pixiv_object import PixivObject
-from pixiv_object.pixiv_user import User
+from pixiv_object.user import User
 
 
 # region enums
