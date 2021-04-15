@@ -7,6 +7,7 @@ from constant import PixivConstant
 from pixiv_object.token import Token
 from pixiv_object.user_detail import UserDetail
 from pixiv_object.illustration import Illustration
+from pixiv_object.illust_page import IllustPage
 from pixiv_api.http_client import HTTPClient
 
 from urllib3.exceptions import HTTPError
@@ -37,7 +38,7 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region GET & POST
-    def _get(self, path: str, params: dict, object_hook: staticmethod = None) -> dict:
+    def _get(self, path: str, params: dict = None, object_hook: staticmethod = None) -> dict:
         """
         GET request to Pixiv
         :param path: relative path to Pixiv's host
@@ -54,6 +55,9 @@ class PixivClient(HTTPClient):
         :param object_hook: convert json to dataclass
         """
         return super(PixivClient, self)._post(PixivConstant.HOST + path, data, object_hook)
+
+    def _get_next(self, url: str, object_hook: staticmethod = None):
+        return super(PixivClient, self)._get(url, object_hook=object_hook)
 
     # endregion
 
@@ -136,14 +140,27 @@ class PixivClient(HTTPClient):
     # endregion
 
     # region requests
-    def get_user_detail(self, user_id=None):
+    def get_user_detail(self, user_id=None) -> UserDetail:
         """
         Get user's info by id
         :param user_id: leave empty to use id from token
-        :return: UserDetail
         """
         return UserDetail(**self._get('/v1/user/detail', {
             'user_id': user_id or self.token.user.id
         }, UserDetail.object_hook))
 
-    # endregion
+    def get_user_illusts(self, callback: staticmethod, user_id=None):
+        """
+        Get user's illustrations by id
+        :param callback: method to call after each request
+        :param user_id: leave empty to use id from token
+        :return: None
+        """
+        page = IllustPage(**self._get('/v1/user/illusts', {
+            'user_id': user_id or self.token.user.id
+        }, IllustPage.object_hook))
+
+        # stop when callback returns false or no next_url
+        while callback(page) and page.next_url:
+            page = IllustPage(**self._get_next(page.next_url))
+# endregion
