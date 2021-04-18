@@ -1,6 +1,4 @@
 # Pixiv API
-[Source code](/pixiv_api)
-
 ## Get Refresh Token
 Since logging in with email/username and password will cause pixiv.net to send a email saying:
 > [pixiv] 新しいログインがありました (場所: {country}) <br>
