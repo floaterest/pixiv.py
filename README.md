@@ -2,7 +2,7 @@
 [Pixiv](https://www.pixiv.net/en/) tools for Python3
 
 # Features
-## Pixiv API
+## Pixiv API ([docs](./docs/pixiv_api.md))
 - Send HTTPS requests
   - User
     - Get user detail
