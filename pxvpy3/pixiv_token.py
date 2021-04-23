@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from pixiv_object import PixivObject
+from pxvpy3.pixiv_object import PixivObject
 
 
 @dataclass

@@ -2,7 +2,7 @@ import time
 from enum import Enum
 from dataclasses import dataclass
 
-from pixiv_database.io import BinaryReader, BinaryWriter
+from pxvpy3.pixiv_database.io import BinaryReader, BinaryWriter
 
 
 # region enum
