@@ -47,6 +47,34 @@ with PixivClient.refresh('refresh token') as client:
 
 Send GET requests at `/v1/user/*`
 
+- Callbacks<br>
+    - Methods that take the `callback` argument will keep executing `callback(page)` until reach the end or rate limit
+    - In order to deal with rate limit, set the `request_handler` field:
+
+      ```py
+      import time
+      
+      from requests.models import Response
+      
+      from pxvpy3.pixiv_api import PixivClient
+      
+      
+      def request(response: Response, is_successful: bool) -> bool:
+          if is_successful:
+              return True
+          elif response.status_code == 403:  # forbidden
+              print('Calm down for 5 minutes')
+              time.sleep(300)
+              # send the request again
+              return False
+          # will raise error
+      
+      
+      with PixivClient.refresh('refresh token') as client:
+          client.request_handler = request
+          # HTTP requests
+      ```
+
 ### User Detail
 
 ([source code](../pxvpy3/pixiv_api.py#L265))
