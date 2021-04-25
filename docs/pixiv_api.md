@@ -1,9 +1,10 @@
 # Pixiv API ([source code](../pxvpy3/pixiv_api.py))
+
 - [Authentication](#authentication)
-  - [Login](#login)
-  - [Refresh](#refresh)
+    - [Login](#login)
+    - [Refresh](#refresh)
 - [User](#user)
-  - [User Detail](#user-detail)
+    - [User Detail](#user-detail)
 
 ## Authentication
 
@@ -11,7 +12,9 @@ Get a user token and create a client for future HTTP requests <br>
 
 ### Login
 
-([source](../pxvpy3/pixiv_api.py#L213))
+([source code](../pxvpy3/pixiv_api.py#L213))
+
+Example:
 
 ```py
 from pxvpy3.pixiv_api import PixivClient
@@ -28,7 +31,8 @@ with PixivClient.login('email', 'password') as client:
 
 ### Refresh
 
-([source](../pxvpy3/pixiv_api.py#L229))
+([source code](../pxvpy3/pixiv_api.py#L229))
+Example:
 
 ```py
 from pxvpy3.pixiv_api import PixivClient
@@ -45,11 +49,8 @@ Send GET requests at `/v1/user/*`
 
 ### User Detail
 
-([source](../pxvpy3/pixiv_api.py#L265))
-
-```py
-def get_user_detail(self, user_id=None) -> UserDetail:
-```
+([source code](../pxvpy3/pixiv_api.py#L265))
+Example:
 
 ```py
 from pxvpy3.pixiv_api import PixivClient
@@ -59,4 +60,26 @@ with PixivClient.refresh('refresh token') as client:
     myself = client.get_user_detail()
     # get detail of other users
     sakimori = client.get_user_detail(211515)
+```
+
+### User Illustrations
+
+([source code](../pxvpy3/pixiv_api.py#L274))
+Example:
+
+```py
+from pxvpy3.pixiv_api import PixivClient, IllustsPage
+
+
+def callback(page: IllustsPage):
+    """
+    Print every illustration ID in a page
+    """
+    for illust in page.illusts:
+        print(illust.id)
+
+
+with PixivClient.refresh('refresh token') as client:
+    # this will call `callback` repeatedly until the end or rate limit
+    client.get_user_illusts(callback)
 ```
