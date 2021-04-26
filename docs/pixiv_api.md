@@ -7,6 +7,7 @@
     - [Get User Detail](#get-user-detail)
     - [Get User Illustrations](#get-user-illustrations)
     - [Get User Bookmarks](#get-user-bookmarks)
+    - [Get User Followings](#get-user-followings)
 ## Authentication
 
 Get a user token and create a client for future HTTP requests <br>
@@ -133,6 +134,30 @@ def callback(page: IllustsPage):
 with PixivClient.refresh('refresh token') as client:
     # this will call `callback` repeatedly until the end or rate limit
     client.get_user_illusts(callback)
+```
+
+- To avoid rate limit, see under [##User](#user)
+
+### Get User Followings
+
+([source code](../pxvpy3/pixiv_api.py#L298))<br>
+Example:
+
+```py
+from pxvpy3.pixiv_api import PixivClient, UsersPage
+
+
+def callback(page: UsersPage):
+    """
+    Print the url for every user in a page
+    """
+    for preview in page.user_previews:
+        print(f'https://www.pixiv.net/user/{preview.user.id}')
+
+
+with PixivClient.refresh('refresh token') as client:
+    # this will call `callback` repeatedly until the end or rate limit
+    client.get_user_followings(callback)
 ```
 
 - To avoid rate limit, see under [##User](#user)
