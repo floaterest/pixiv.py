@@ -4,9 +4,9 @@
     - [Login](#login)
     - [Refresh](#refresh)
 - [User](#user)
-    - [User Detail](#user-detail)
-    - [User Illustrations](#user-illustrations)
-
+    - [Get User Detail](#get-user-detail)
+    - [Get User Illustrations](#get-user-illustrations)
+    - [Get User Bookmarks](#get-user-bookmarks)
 ## Authentication
 
 Get a user token and create a client for future HTTP requests <br>
@@ -74,7 +74,7 @@ Send GET requests at `/v1/user/*`
         # HTTP requests
     ```
 
-### User Detail
+### Get User Detail
 
 ([source code](../pxvpy3/pixiv_api.py#L265))
 Example:
@@ -89,7 +89,7 @@ with PixivClient.refresh('refresh token') as client:
     sakimori = client.get_user_detail(211515)
 ```
 
-### User Illustrations
+### Get User Illustrations
 
 ([source code](../pxvpy3/pixiv_api.py#L274))
 Example:
@@ -110,3 +110,33 @@ with PixivClient.refresh('refresh token') as client:
     # this will call `callback` repeatedly until the end or rate limit
     client.get_user_illusts(callback)
 ```
+
+- To avoid rate limit, see under [##User](#user)
+
+### Get User Bookmarks
+
+([source code](../pxvpy3/pixiv_api.py#L285))
+Example:
+
+```py
+from pxvpy3.pixiv_api import PixivClient, IllustsPage
+
+
+def callback(page: IllustsPage):
+    """
+    Print the url for every illustration in a page
+    """
+    for illust in page.illusts:
+        print(f'https://www.pixiv.net/artworks/{illust.id}')
+
+
+with PixivClient.refresh('refresh token') as client:
+    # this will call `callback` repeatedly until the end or rate limit
+    client.get_user_illusts(callback)
+```
+
+- To avoid rate limit, see under [##User](#user)
+
+## Download
+
+TODO
