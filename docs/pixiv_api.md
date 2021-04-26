@@ -76,7 +76,7 @@ Send GET requests at `/v1/user/*`
 
 ### Get User Detail
 
-([source code](../pxvpy3/pixiv_api.py#L265))
+([source code](../pxvpy3/pixiv_api.py#L265))<br>
 Example:
 
 ```py
@@ -91,7 +91,7 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Get User Illustrations
 
-([source code](../pxvpy3/pixiv_api.py#L274))
+([source code](../pxvpy3/pixiv_api.py#L274))<br>
 Example:
 
 ```py
@@ -115,7 +115,7 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Get User Bookmarks
 
-([source code](../pxvpy3/pixiv_api.py#L285))
+([source code](../pxvpy3/pixiv_api.py#L285))<br>
 Example:
 
 ```py
