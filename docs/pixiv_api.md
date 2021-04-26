@@ -5,6 +5,7 @@
     - [Refresh](#refresh)
 - [User](#user)
     - [User Detail](#user-detail)
+    - [User Illustrations](#user-illustrations)
 
 ## Authentication
 
