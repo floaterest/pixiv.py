@@ -5,12 +5,12 @@ from typing import Callable
 from datetime import datetime
 from urllib3.exceptions import HTTPError
 
-from pxvpy3.constant import PixivConstant
-from pxvpy3.pixiv_object import PixivObject, \
+from pxpy3.constant import PixivConstant
+from pxpy3.pixiv_object import PixivObject, \
     Illustration, IllustsPage, \
     UserDetail, UsersPage, \
     Novel, NovelText
-from pxvpy3.pixiv_token import Token
+from pxpy3.pixiv_token import Token
 
 import cloudscraper
 from requests.models import Response
