@@ -1,4 +1,4 @@
-# pxvpy3
+# PxPy3
 [Pixiv](https://www.pixiv.net/en/) tools for Python3
 
 # Features
