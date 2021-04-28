@@ -133,7 +133,7 @@ def callback(page: IllustsPage):
 
 with PixivClient.refresh('refresh token') as client:
     # this will call `callback` repeatedly until the end or rate limit
-    client.get_user_illusts(callback)
+    client.get_user_bookmarks(callback)
 ```
 
 - To avoid rate limit, see under [##User](#user)
