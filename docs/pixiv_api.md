@@ -8,6 +8,8 @@
     - [Get User Illustrations](#get-user-illustrations)
     - [Get User Bookmarks](#get-user-bookmarks)
     - [Get User Followings](#get-user-followings)
+- [Download](#download)
+    - [Custom Filenames](#custom-filenames)
 
 ## Authentication
 
@@ -165,24 +167,26 @@ with PixivClient.refresh('refresh token') as client:
 
 ## Download
 
-- Custom filenames with `filename_formatter`
-  Example (Download all public bookmarks):
+### Custom Filenames
 
-  ```py
-  from pxvpy3.pixiv_api import IllustsPage, Illustration, PixivClient
-  
-  
-  def formatter(illust: Illustration, index: int) -> str:
-      # file extension is optional
-      return f'{illust.user.id}-{illust.id}-{index}'
-  
-  
-  def callback(page: IllustsPage):
-      for illust in page.illusts:
-          client.download_illust(illust)
-  
-  
-  with PixivClient.refresh('refresh token') as client:
-      client.filename_formatter = formatter
-      client.get_user_bookmarks(callback)
+Set the `file_formatter` field in `PixivClient`<br>
+Example (Download all public bookmarks):
+
+```py
+from pxvpy3.pixiv_api import IllustsPage, Illustration, PixivClient
+
+
+def formatter(illust: Illustration, index: int) -> str:
+    # file extension is optional
+    return f'{illust.user.id}-{illust.id}-{index}'
+
+
+def callback(page: IllustsPage):
+    for illust in page.illusts:
+        client.download_illust(illust)
+
+
+with PixivClient.refresh('refresh token') as client:
+    client.filename_formatter = formatter
+    client.get_user_bookmarks(callback)
   ```
