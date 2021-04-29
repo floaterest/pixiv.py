@@ -8,6 +8,8 @@
     - [Get User Illustrations](#get-user-illustrations)
     - [Get User Bookmarks](#get-user-bookmarks)
     - [Get User Followings](#get-user-followings)
+- [Illustration](#illustration)
+    - [Get Illustration Detail](#get-illustration-detail)
 - [Download](#download)
     - [Custom Filenames](#custom-filenames)
 
@@ -26,7 +28,7 @@ from pxpy3.pixiv_api import PixivClient
 
 # will receive email
 with PixivClient.login('email', 'password') as client:
-  print(client.token.refresh_token)
+    print(client.token.refresh_token)
 ```
 
 - Caution: Loggin in with email and password will cause Pixiv to send an email saying:
@@ -44,8 +46,8 @@ from pxpy3.pixiv_api import PixivClient
 
 # will not receive email
 with PixivClient.refresh('refresh token') as client:
-  # HTTP requests
-  pass
+    # HTTP requests
+    pass
 ```
 
 ## User
@@ -87,10 +89,10 @@ Example:
 from pxpy3.pixiv_api import PixivClient
 
 with PixivClient.refresh('refresh token') as client:
-  # get detail of myself
-  myself = client.get_user_detail()
-  # get detail of other users
-  sakimori = client.get_user_detail(211515)
+    # get detail of myself
+    myself = client.get_user_detail()
+    # get detail of other users
+    sakimori = client.get_user_detail(211515)
 ```
 
 ### Get User Illustrations
@@ -103,16 +105,16 @@ from pxpy3.pixiv_api import PixivClient, IllustsPage
 
 
 def callback(page: IllustsPage):
-  """
-  Print every illustration ID in a page
-  """
-  for illust in page.illusts:
-    print(illust.id)
+    """
+    Print every illustration ID in a page
+    """
+    for illust in page.illusts:
+        print(illust.id)
 
 
 with PixivClient.refresh('refresh token') as client:
-  # this will call `callback` repeatedly until the end or rate limit
-  client.get_user_illusts(callback)
+    # this will call `callback` repeatedly until the end or rate limit
+    client.get_user_illusts(callback)
 ```
 
 - To avoid rate limit, see under [##User](#user)
@@ -127,16 +129,16 @@ from pxpy3.pixiv_api import PixivClient, IllustsPage
 
 
 def callback(page: IllustsPage):
-  """
-  Print the url for every illustration in a page
-  """
-  for illust in page.illusts:
-    print(f'https://www.pixiv.net/artworks/{illust.id}')
+    """
+    Print the url for every illustration in a page
+    """
+    for illust in page.illusts:
+        print(f'https://www.pixiv.net/artworks/{illust.id}')
 
 
 with PixivClient.refresh('refresh token') as client:
-  # this will call `callback` repeatedly until the end or rate limit
-  client.get_user_bookmarks(callback)
+    # this will call `callback` repeatedly until the end or rate limit
+    client.get_user_bookmarks(callback)
 ```
 
 - To avoid rate limit, see under [##User](#user)
@@ -151,19 +153,36 @@ from pxpy3.pixiv_api import PixivClient, UsersPage
 
 
 def callback(page: UsersPage):
-  """
-  Print the url for every user in a page
-  """
-  for preview in page.user_previews:
-    print(f'https://www.pixiv.net/user/{preview.user.id}')
+    """
+    Print the url for every user in a page
+    """
+    for preview in page.user_previews:
+        print(f'https://www.pixiv.net/user/{preview.user.id}')
 
 
 with PixivClient.refresh('refresh token') as client:
-  # this will call `callback` repeatedly until the end or rate limit
-  client.get_user_followings(callback)
+    # this will call `callback` repeatedly until the end or rate limit
+    client.get_user_followings(callback)
 ```
 
 - To avoid rate limit, see under [##User](#user)
+
+## Illustration
+
+Send GET requests at `/v1/illust/*`
+
+### Get Illustration Detail
+
+([source code](../pxpy3/pixiv_api.py#L314))<br>
+Example:
+
+```py
+from pxpy3.pixiv_api import PixivClient
+
+with PixivClient.refresh('refresh token') as client:
+    # Pixiv 1 year anniversary
+    pixiv = client.get_illust_detail(1580459)
+```
 
 ## Download
 
@@ -177,16 +196,16 @@ from pxpy3.pixiv_api import IllustsPage, Illustration, PixivClient
 
 
 def formatter(illust: Illustration, index: int) -> str:
-  # file extension is optional
-  return f'{illust.user.id}-{illust.id}-{index}'
+    # file extension is optional
+    return f'{illust.user.id}-{illust.id}-{index}'
 
 
 def callback(page: IllustsPage):
-  for illust in page.illusts:
-    client.download_illust(illust)
+    for illust in page.illusts:
+        client.download_illust(illust)
 
 
 with PixivClient.refresh('refresh token') as client:
-  client.filename_formatter = formatter
-  client.get_user_bookmarks(callback)
+    client.filename_formatter = formatter
+    client.get_user_bookmarks(callback)
   ```
