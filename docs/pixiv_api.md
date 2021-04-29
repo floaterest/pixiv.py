@@ -92,7 +92,7 @@ with PixivClient.refresh('refresh token') as client:
     # get detail of myself
     myself = client.get_user_detail()
     # get detail of other users
-    sakimori = client.get_user_detail(211515)
+    pixiv_official = client.get_user_detail(11)
 ```
 
 ### Get User Illustrations
@@ -113,8 +113,11 @@ def callback(page: IllustsPage):
 
 
 with PixivClient.refresh('refresh token') as client:
-    # this will call `callback` repeatedly until the end or rate limit
+    # will call `callback` repeatedly until the end or rate limit
+    # get illusts from myself
     client.get_user_illusts(callback)
+    # get illusts from user 11 (Pixiv Official)
+    client.get_user_illusts(callback, 11)
 ```
 
 - To avoid rate limit, see under [##User](#user)
@@ -207,5 +210,6 @@ def callback(page: IllustsPage):
 
 with PixivClient.refresh('refresh token') as client:
     client.filename_formatter = formatter
+    # download every public bookmark
     client.get_user_bookmarks(callback)
   ```
