@@ -39,6 +39,7 @@ with PixivClient.login('email', 'password') as client:
 ### Refresh
 
 ([source code](../pxpy3/pixiv_api.py#L229))
+
 Example:
 
 ```py
@@ -141,7 +142,10 @@ def callback(page: IllustsPage):
 
 with PixivClient.refresh('refresh token') as client:
     # this will call `callback` repeatedly until the end or rate limit
+    # get my public bookmarks
     client.get_user_bookmarks(callback)
+    # get my private bookmarks
+    client.get_user_bookmarks(callback, restrict='private')
 ```
 
 - To avoid rate limit, see under [##User](#user)
@@ -165,7 +169,10 @@ def callback(page: UsersPage):
 
 with PixivClient.refresh('refresh token') as client:
     # this will call `callback` repeatedly until the end or rate limit
+    # get my public followings
     client.get_user_followings(callback)
+    # get my private followings
+    client.get_user_followings(callback, restrict='private')
 ```
 
 - To avoid rate limit, see under [##User](#user)
