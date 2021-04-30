@@ -10,6 +10,9 @@
     - [Get User Followings](#get-user-followings)
 - [Illustration](#illustration)
     - [Get Illustration Detail](#get-illustration-detail)
+- [Bookmark](#bookmark)
+    - [Add Bookmark](#add-bookmark)
+    - [Delete Bookmark](#delete-bookmark)
 - [Download](#download)
     - [Custom Filenames](#custom-filenames)
 
@@ -53,7 +56,7 @@ with PixivClient.refresh('refresh token') as client:
 
 ## User
 
-Send GET requests at `/v1/user/*`
+Send GET requests to `/v1/user/*`
 
 - Methods that take the `callback` argument will keep executing `callback(page)` until reach the end or rate limit<br>
   In order to deal with rate limit, set the `request_handler` field:
@@ -83,7 +86,8 @@ Send GET requests at `/v1/user/*`
 
 ### Get User Detail
 
-([source code](../pxpy3/pixiv_api.py#L265))<br>
+([source code](../pxpy3/pixiv_api.py#L265))
+
 Example:
 
 ```py
@@ -98,7 +102,8 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Get User Illustrations
 
-([source code](../pxpy3/pixiv_api.py#L274))<br>
+([source code](../pxpy3/pixiv_api.py#L274))
+
 Example:
 
 ```py
@@ -125,7 +130,8 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Get User Bookmarks
 
-([source code](../pxpy3/pixiv_api.py#L285))<br>
+([source code](../pxpy3/pixiv_api.py#L285))
+
 Example:
 
 ```py
@@ -152,7 +158,8 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Get User Followings
 
-([source code](../pxpy3/pixiv_api.py#L298))<br>
+([source code](../pxpy3/pixiv_api.py#L298))
+
 Example:
 
 ```py
@@ -179,11 +186,12 @@ with PixivClient.refresh('refresh token') as client:
 
 ## Illustration
 
-Send GET requests at `/v1/illust/*`
+Send GET requests to `/v1/illust/*`
 
 ### Get Illustration Detail
 
-([source code](../pxpy3/pixiv_api.py#L314))<br>
+([source code](../pxpy3/pixiv_api.py#L314))
+
 Example:
 
 ```py
@@ -192,6 +200,38 @@ from pxpy3.pixiv_api import PixivClient
 with PixivClient.refresh('refresh token') as client:
     # Pixiv 1 year anniversary
     pixiv = client.get_illust_detail(1580459)
+```
+
+## Bookmark
+
+Send POST requests to `/v2/illust/bookmark/*`
+
+### Add Bookmark
+
+([source code](../pxpy3/pixiv_api.py#L340))
+
+Example:
+
+```py
+from pxpy3.pixiv_api import PixivClient
+
+with PixivClient.refresh('refresh token') as client:
+    # add a private bookmark
+    client.add_bookmark(1580459, 'private')
+```
+
+### Delete Bookmark
+
+([source code](../pxpy3/pixiv_api.py#L346))
+
+Example:
+
+```py
+from pxpy3.pixiv_api import PixivClient
+
+with PixivClient.refresh('refresh token') as client:
+    # delete a public bookmark
+    client.delete_bookmark(1580459)
 ```
 
 ## Download
