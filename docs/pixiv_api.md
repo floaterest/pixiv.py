@@ -1,5 +1,7 @@
 # Pixiv API ([source code](../pxpy3/pixiv_api.py))
 
+tl;dr see [examples](pixiv_api_examples.md)
+
 - [Authentication](#authentication)
     - [Login](#login)
     - [Refresh](#refresh)
