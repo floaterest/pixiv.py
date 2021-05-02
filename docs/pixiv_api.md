@@ -1,4 +1,4 @@
-# Pixiv API ([source code](../pxpy3/pixiv_api.py))
+# Pixiv API ([source code](../pixivpy/pixiv_api.py))
 
 tl;dr see [examples](pixiv_api_examples.md)
 
@@ -24,12 +24,12 @@ Get a user token and create a client for future HTTP requests <br>
 
 ### Login
 
-([source code](../pxpy3/pixiv_api.py#L213))
+([source code](../pixivpy/pixiv_api.py#L213))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient
+from pixivpy.pixiv_api import PixivClient
 
 # will receive email
 with PixivClient.login('email', 'password') as client:
@@ -43,12 +43,12 @@ with PixivClient.login('email', 'password') as client:
 
 ### Refresh
 
-([source code](../pxpy3/pixiv_api.py#L229))
+([source code](../pixivpy/pixiv_api.py#L229))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient
+from pixivpy.pixiv_api import PixivClient
 
 # will not receive email
 with PixivClient.refresh('refresh token') as client:
@@ -67,7 +67,7 @@ Send GET requests to `/v1/user/*`
     
     from requests.models import Response
     
-    from pxpy3.pixiv_api import PixivClient
+    from pixivpy.pixiv_api import PixivClient
     
     
     def request(response: Response, is_successful: bool) -> bool:
@@ -88,12 +88,12 @@ Send GET requests to `/v1/user/*`
 
 ### Get User Detail
 
-([source code](../pxpy3/pixiv_api.py#L265))
+([source code](../pixivpy/pixiv_api.py#L265))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient
+from pixivpy.pixiv_api import PixivClient
 
 with PixivClient.refresh('refresh token') as client:
     # get detail of myself
@@ -104,12 +104,12 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Get User Illustrations
 
-([source code](../pxpy3/pixiv_api.py#L274))
+([source code](../pixivpy/pixiv_api.py#L274))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient, IllustsPage
+from pixivpy.pixiv_api import PixivClient, IllustsPage
 
 
 def callback(page: IllustsPage):
@@ -132,12 +132,12 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Get User Bookmarks
 
-([source code](../pxpy3/pixiv_api.py#L285))
+([source code](../pixivpy/pixiv_api.py#L285))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient, IllustsPage
+from pixivpy.pixiv_api import PixivClient, IllustsPage
 
 
 def callback(page: IllustsPage):
@@ -160,12 +160,12 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Get User Followings
 
-([source code](../pxpy3/pixiv_api.py#L298))
+([source code](../pixivpy/pixiv_api.py#L298))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient, UsersPage
+from pixivpy.pixiv_api import PixivClient, UsersPage
 
 
 def callback(page: UsersPage):
@@ -192,12 +192,12 @@ Send GET requests to `/v1/illust/*`
 
 ### Get Illustration Detail
 
-([source code](../pxpy3/pixiv_api.py#L314))
+([source code](../pixivpy/pixiv_api.py#L314))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient
+from pixivpy.pixiv_api import PixivClient
 
 with PixivClient.refresh('refresh token') as client:
     # Pixiv 1 year anniversary
@@ -210,12 +210,12 @@ Send POST requests to `/v2/illust/bookmark/*`
 
 ### Add Bookmark
 
-([source code](../pxpy3/pixiv_api.py#L340))
+([source code](../pixivpy/pixiv_api.py#L340))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient
+from pixivpy.pixiv_api import PixivClient
 
 with PixivClient.refresh('refresh token') as client:
     # add a private bookmark
@@ -224,12 +224,12 @@ with PixivClient.refresh('refresh token') as client:
 
 ### Delete Bookmark
 
-([source code](../pxpy3/pixiv_api.py#L346))
+([source code](../pixivpy/pixiv_api.py#L346))
 
 Example:
 
 ```py
-from pxpy3.pixiv_api import PixivClient
+from pixivpy.pixiv_api import PixivClient
 
 with PixivClient.refresh('refresh token') as client:
     # delete a public bookmark
@@ -244,7 +244,7 @@ Set the `file_formatter` field in `PixivClient`<br>
 Example (Download all public bookmarks):
 
 ```py
-from pxpy3.pixiv_api import IllustsPage, Illustration, PixivClient
+from pixivpy.pixiv_api import IllustsPage, Illustration, PixivClient
 
 
 def formatter(illust: Illustration, index: int) -> str:

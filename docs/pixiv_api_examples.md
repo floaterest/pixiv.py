@@ -7,7 +7,7 @@
 ```py
 import os
 
-from pxpy3.pixiv_api import PixivClient, IllustsPage, Illustration
+from pixivpy.pixiv_api import PixivClient, IllustsPage, Illustration
 
 
 def formatter(illust: Illustration, i: int) -> str:
