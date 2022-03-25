@@ -1,4 +1,4 @@
-# Pixiv.py
+# Pixiv.py (ARCHIVED)
 [Pixiv](https://www.pixiv.net/en/) tools for Python3
 
 # Features
